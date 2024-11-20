@@ -15,11 +15,13 @@ def encode_image(image_path):
 
 class ConstraintGenerator:
     def __init__(self, config):
+        
         self.config = config
         self.client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
         self.base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), './vlm_query')
         with open(os.path.join(self.base_dir, 'prompt_template.txt'), 'r') as f:
             self.prompt_template = f.read()
+        print('done launching config gen')
 
     def _build_prompt(self, image_path, instruction):
         img_base64 = encode_image(image_path)

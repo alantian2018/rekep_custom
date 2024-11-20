@@ -435,8 +435,8 @@ class ReKepOGEnv:
         """
         this is supposed to be for true ee pose (franka hand) in robot frame
         """
-        current_pos = self.robot.get_eef_position()
-        current_xyzw = self.robot.get_eef_orientation()
+        current_pos = self.robot.get_eef_position().cpu().numpy()
+        current_xyzw = self.robot.get_eef_orientation().cpu().numpy()
         current_rotmat = T.quat2mat(current_xyzw)
         target_rotmat = T.quat2mat(target_xyzw)
         # calculate position delta
@@ -465,8 +465,8 @@ class ReKepOGEnv:
             # convert world pose to robot pose
             target_pose_robot = np.dot(self.world2robot_homo, T.convert_pose_quat2mat(target_pose_world))
             # convert to relative pose to be used with the underlying controller
-            relative_position = target_pose_robot[:3, 3] - self.robot.get_relative_eef_position()
-            relative_quat = T.quat_distance(T.mat2quat(target_pose_robot[:3, :3]), self.robot.get_relative_eef_orientation())
+            relative_position = target_pose_robot[:3, 3] - self.robot.get_relative_eef_position().numpy()
+            relative_quat = T.quat_distance(T.mat2quat(target_pose_robot[:3, :3]), self.robot.get_relative_eef_orientation().numpy())
             assert isinstance(self.robot, Fetch), "this action space is only for fetch"
             action = np.zeros(12)  # first 3 are base, which we don't use
             action[4:7] = relative_position

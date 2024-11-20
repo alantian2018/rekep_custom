@@ -455,9 +455,10 @@ def pose2mat(pose):
     Returns:
         np.array: 4x4 homogeneous matrix
     """
-    homo_pose_mat = np.zeros((4, 4), dtype=pose[0].dtype)
+    
+    homo_pose_mat = np.zeros((4, 4), dtype=np.float64)
     homo_pose_mat[:3, :3] = quat2mat(pose[1])
-    homo_pose_mat[:3, 3] = np.array(pose[0], dtype=pose[0].dtype)
+    homo_pose_mat[:3, 3] = np.array(pose[0], dtype=np.float64)
     homo_pose_mat[3, 3] = 1.0
     return homo_pose_mat
 

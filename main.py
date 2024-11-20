@@ -37,7 +37,8 @@ class Main:
         self.keypoint_proposer = KeypointProposer(global_config['keypoint_proposer'])
         self.constraint_generator = ConstraintGenerator(global_config['constraint_generator'])
         # initialize environment
-        self.env = ReKepOGEnv(global_config['env'], scene_file, verbose=False)
+        self.env = ReKepOGEnv(global_config['env'], scene_file, verbose=True)
+        print('ENV created')
         # setup ik solver (for reachability cost)
         assert isinstance(self.env.robot, Fetch), "The IK solver assumes the robot is a Fetch robot"
         ik_solver = IKSolver(
@@ -48,9 +49,10 @@ class Main:
             world2robot_homo=self.env.world2robot_homo,
         )
         # initialize solvers
-        self.subgoal_solver = SubgoalSolver(global_config['subgoal_solver'], ik_solver, self.env.reset_joint_pos)
-        self.path_solver = PathSolver(global_config['path_solver'], ik_solver, self.env.reset_joint_pos)
+        self.subgoal_solver = SubgoalSolver(global_config['subgoal_solver'], ik_solver, self.env.reset_joint_pos.cpu().numpy())
+        self.path_solver = PathSolver(global_config['path_solver'], ik_solver, self.env.reset_joint_pos.cpu().numpy())
         # initialize visualizer
+        print('solvers done...')
         if self.visualize:
             self.visualizer = Visualizer(global_config['visualizer'], self.env)
 
@@ -373,6 +375,7 @@ if __name__ == "__main__":
             'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
             },
     }
+    
     task = task_list['pen']
     scene_file = task['scene_file']
     instruction = task['instruction']

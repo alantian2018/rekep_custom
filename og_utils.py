@@ -26,10 +26,10 @@ class OGCamera:
         """
         obs = self.cam.get_obs()
         ret = {}
-        ret["rgb"] = obs[0]["rgb"][:,:,:3]  # H, W, 3
-        ret["depth"] = obs[0]["depth_linear"]  # H, W
+        ret["rgb"] = obs[0]["rgb"][:,:,:3].cpu().numpy()  # H, W, 3
+        ret["depth"] = obs[0]["depth_linear"].cpu().numpy()  # H, W
         ret["points"] = pixel_to_3d_points(ret["depth"], self.intrinsics, self.extrinsics)  # H, W, 3
-        ret["seg"] = obs[0]["seg_semantic"]  # H, W
+        ret["seg"] = obs[0]["seg_semantic"].cpu().numpy()  # H, W
         ret["intrinsic"] = self.intrinsics
         ret["extrinsic"] = self.extrinsics
         return ret
@@ -98,6 +98,7 @@ def pixel_to_3d_points(depth_image, intrinsics, extrinsics):
 
     # Convert pixel coordinates to normalized camera coordinates
     z = depth_image
+ 
     x = (i - cx) * z / fx
     y = (j - cy) * z / fy
 
