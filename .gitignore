@@ -2,3 +2,10 @@
 **/__pycache__/**
 **/*.egg-info/
 *.egg
+pen-debug
+pen
+videos
+vlm_query
+media
+pen_pickup_models
+pen_pick_place_models

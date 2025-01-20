@@ -510,35 +510,8 @@
                 },
                 "joints": {},
                 "non_kin": {}
-            },
-            "pencil_holder_1": {
-                "root_link": {
-                    "pos": [
-                        -0.30,
-                        0.15,
-                        0.7163046002388
-                    ],
-                    "ori": [
-                        0.00011037533113267273,
-                        -0.00012373141362331808,
-                        -1.8041100702248514e-06,
-                        1.0000001192092896
-                    ],
-                    "lin_vel": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "ang_vel": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                "joints": {},
-                "non_kin": {}
             }
-        }
+         }
     },
     "objects_info": {
         "init_info": {
@@ -909,21 +882,6 @@
                         3.0,
                         3.0,
                         1.3
-                    ]
-                }
-            },
-            "pencil_holder_1": {
-                "class_module": "omnigibson.objects.dataset_object",
-                "class_name": "DatasetObject",
-                "args": {
-                    "name": "pencil_holder_1",
-                    "prim_path": "/World/pencil_holder_1",
-                    "category": "pencil_holder",
-                    "model": "muqeud",
-                    "scale": [
-                        1.5,
-                        1.5,
-                        1.0
                     ]
                 }
             }

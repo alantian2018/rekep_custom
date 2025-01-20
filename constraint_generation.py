@@ -151,6 +151,7 @@ class ConstraintGenerator:
         print(f'[{time.time()-start:.2f}s] Querying OpenAI API...Done')
         # save raw output
         with open(os.path.join(self.task_dir, 'output_raw.txt'), 'w') as f:
+            print(output)
             f.write(output)
         # parse and save constraints
         self._parse_and_save_constraints(output, self.task_dir)

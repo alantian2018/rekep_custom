@@ -3,15 +3,18 @@ import numpy as np
 import os
 import datetime
 import transform_utils as T
+ 
 import trimesh
 import open3d as o3d
 import imageio
+from collections import OrderedDict
 import omnigibson as og
 from omnigibson.macros import gm
 from omnigibson.utils.usd_utils import PoseAPI, mesh_prim_mesh_to_trimesh_mesh, mesh_prim_shape_to_trimesh_mesh
 from omnigibson.robots.fetch import Fetch
 from omnigibson.controllers import IsGraspingState
 from og_utils import OGCamera
+from robomimic.utils.tensor_utils import flatten_nested_dict_list
 from utils import (
     bcolors,
     get_clock_time,
@@ -19,13 +22,19 @@ from utils import (
     angle_between_quats,
     get_linear_interpolation_steps,
     linear_interpolate_poses,
+    exec_safe
 )
 from omnigibson.robots.manipulation_robot import ManipulationRobot
 from omnigibson.controllers.controller_base import ControlType, BaseController
-
+import torch
 # Don't use GPU dynamics and use flatcache for performance boost
 gm.USE_GPU_DYNAMICS = True
 gm.ENABLE_FLATCACHE = False
+
+def preprocess_obs(d):
+    # This function recursively flattens a nested dictionary into a list of tensors
+    out = flatten_nested_dict_list(d)
+    return torch.cat((out[0][1], out[1][1]))
 
 # some customization to the OG functions
 def custom_clip_control(self, control):
@@ -54,9 +63,339 @@ def custom_clip_control(self, control):
 Fetch._initialize = ManipulationRobot._initialize
 BaseController.clip_control = custom_clip_control
 
+class Trajectory:
+    def __init__(self):
+        self.observations = []
+        self.actions = []
+        self.rewards = []
+        self.terminals = []
+        self.agent_infos = []
+        self.env_infos = []
+        self.next_observations = []
+        self.is_grasping_releasing = []
+
+    def __len__(self):
+        return len(self.actions)
+    
+    def add_step(self, o,a,r,t, agent_infos, env_infos, next_o, is_grasping_releasing):
+        self.observations.append(o)
+        self.actions.append(a)
+        self.rewards.append(r)
+        self.terminals.append(t)
+        self.agent_infos.append(agent_infos)
+        self.env_infos.append(env_infos)
+        self.next_observations.append(next_o)
+        self.is_grasping_releasing.append(is_grasping_releasing)
+
+    
+    
+    def add_new_traj(self, other_traj):
+        other_o, other_a, other_r, other_t, other_ai, other_ei, other_next_o, other_igr = other_traj.get_paths
+        self.observations.extend(other_o)
+        self.actions.extend(other_a)
+        self.rewards.extend(other_r)
+        self.terminals.extend(other_t)
+        self.agent_infos.extend(other_ai)
+        self.env_infos.extend(other_ei)
+        self.next_observations.extend(other_next_o)
+        self.is_grasping_releasing.extend(other_igr)
+
+    def get_paths(self):
+        return (
+            self.observations,
+            self.actions,
+            self.rewards,
+            self.terminals,
+            self.agent_infos,
+            self.env_infos,
+            self.next_observations,
+            self.is_grasping_releasing
+        )
+
+    def clear(self):
+        self.observations = []
+        self.actions = []
+        self.rewards = []
+        self.terminals = []
+        self.agent_infos = []
+        self.env_infos = []
+        self.next_observations = []
+        self.is_grasping_releasing = []
+    
+
+class CustomOGEnv(og.Environment):
+
+    """
+    Custom OmniGibson env that supports
+      (1) custom reward functions
+      (2) keypoint tracking
+    """
+    def __init__(self, args, config, randomize=False, low_dim =True):
+        self.randomize = None
+        self.low_dim=None
+        self.objs = OrderedDict(
+            {'pen_1': {'randomize' : randomize,
+                       'obs' : True,
+                  'min_bounds':[-0.45, -0.35, 0.78],
+                  'max_bounds':[-0.15, -0.05, 0.8]},
+             
+             'table_1' : { 'randomize' : False, 'obs':False}})
+        self.robot = None
+        super().__init__(args)
+        self.robot = self.robots[0]
+        self.randomize=randomize
+        
+
+        # Update the initial state of the scene
+        self.scene.update_initial_state()
+        
+        # Perform initial simulation steps
+        for _ in range(10):
+            og.sim.step()
+        self.reward_functions = None
+        self.step_counter = 0
+        
+        
+        self.low_dim=True
+
+        self.action_space = self.action_space['Fetch']
+        self.config = config
+        self.init_pos = None
+        self._initialize_cameras(self.config['camera'])
+        
+        
+    
+       
+        
+    def set_reward_functions(self,path_to_VLM_query):
+        list_of_reward_funcs = [i for i in os.listdir(path_to_VLM_query) 
+                                if i.startswith('stage') and i.endswith('_subgoal_constraints.txt')]
+
+        print(f'Loaded {len(list_of_reward_funcs)} reward functions')
+        constraints = []
+        for i in range (len(list_of_reward_funcs)):
+            
+            with open (os.path.join(path_to_VLM_query, f'stage{i+1}_subgoal_constraints.txt')) as f:
+                function_text = f.read()
+            gvars_dict = {'np': np}
+            lvars_dict = dict()
+            exec_safe(function_text, gvars=gvars_dict, lvars=lvars_dict)
+            constraints += list(lvars_dict.values())
+        self.reward_functions = constraints
+
+    def get_dense_reward_constraint(self,EE, keypoints):
+        cost = 0 
+        try:
+            EE = EE.cpu()
+        except:
+            pass
+        for func in self.reward_functions:
+            cost -= func(EE, keypoints)
+        return cost
+
+    def step(self, action):
+        if (action.size != 12):
+            a = np.zeros(12)
+            a[4:]=action
+            action = a
+
+        next_o, reward, terminated, truncated, info = super().step(action)
+       
+    #    if self.reward_functions is not None:
+    #        reward = self.get_dense_reward_constraint(np.asarray(self.robot.get_eef_position()), self.get_keypoint_positions())
+
+        if self.low_dim:
+            next_o  = self.get_low_dim_obs()
+        
+        terminated = self.get_done()
+        if terminated:
+            print('DONE!')
+        return next_o,reward,terminated,truncated, dict()
+
+    def reset(self, objs=None):
+        super().reset()
+        self.init_pos = dict()
+        if self.randomize and objs is None:
+           # print('randomizing')
+            for obj in self.objs:
+                if self.objs[obj]['randomize']:
+                    current_object = self.scene.object_registry("name", obj)
+                    pos,orn = self.get_random_position(current_object, self.objs[obj]['min_bounds'], self.objs[obj]['max_bounds'])         
+                    self.init_pos[obj]=np.concatenate((pos, orn))
+                    current_object.set_position_orientation(
+                        position = pos,
+                        orientation = orn
+                    ) 
+        elif objs is not None:
+            for obj in objs:
+                current_object = self.scene.object_registry("name", obj)
+                current_object.set_position_orientation(
+                        position = objs[obj][:3],
+                        orientation = objs[obj][3:]
+                    ) 
+       
+
+        for i in range (5):
+            og.sim.step()
+ 
+        if self.robot is not None:
+            return self.get_low_dim_obs()
+
+    def get_done(self):
+        return self.is_grasping('pen_1')
+
+    def register_keypoints(self, keypoints):
+        """
+        Args:
+            keypoints (np.ndarray): keypoints in the world frame of shape (N, 3)
+        Returns:
+            None
+        Given a set of keypoints in the world frame, this function registers them so that their newest positions can be accessed later.
+        """
+
+        if not isinstance(keypoints, np.ndarray):
+            keypoints = np.array(keypoints)
+        self.keypoints = keypoints
+        self._keypoint_registry = dict()
+        self._keypoint2object = dict()
+        exclude_names = ['wall', 'floor', 'ceiling', 'table', 'fetch', 'robot']
+        for idx, keypoint in enumerate(keypoints):
+            closest_distance = np.inf
+            for obj in self.scene.objects:
+                if any([name in obj.name.lower() for name in exclude_names]):
+                    continue
+                for link in obj.links.values():
+                    for mesh in link.visual_meshes.values():
+                        mesh_prim_path = mesh.prim_path
+                        mesh_type = mesh.prim.GetPrimTypeInfo().GetTypeName()
+                        if mesh_type == 'Mesh':
+                            trimesh_object = mesh_prim_mesh_to_trimesh_mesh(mesh.prim)
+                        else:
+                            trimesh_object = mesh_prim_shape_to_trimesh_mesh(mesh.prim)
+                        world_pose_w_scale = PoseAPI.get_world_pose_with_scale(mesh.prim_path)
+                        trimesh_object.apply_transform(world_pose_w_scale)
+                        points_transformed = trimesh_object.sample(1000)
+                        
+                        # find closest point
+                        dists = np.linalg.norm(points_transformed - keypoint, axis=1)
+                        point = points_transformed[np.argmin(dists)]
+                        distance = np.linalg.norm(point - keypoint)
+                        if distance < closest_distance:
+                            closest_distance = distance
+                            closest_prim_path = mesh_prim_path
+                            closest_point = point
+                            closest_obj = obj
+            self._keypoint_registry[idx] = (closest_prim_path, PoseAPI.get_world_pose(closest_prim_path))
+            self._keypoint2object[idx] = closest_obj
+            # overwrite the keypoint with the closest point
+            self.keypoints[idx] = closest_point
+
+    def get_keypoint_positions(self):
+        """
+        Args:
+            None
+        Returns:
+            np.ndarray: keypoints in the world frame of shape (N, 3)
+        Given the registered keypoints, this function returns their current positions in the world frame.
+        """
+        assert hasattr(self, '_keypoint_registry') and self._keypoint_registry is not None, "Keypoints have not been registered yet."
+        keypoint_positions = []
+        for idx, (prim_path, init_pose) in self._keypoint_registry.items():
+            init_pose = T.pose2mat(init_pose)
+            centering_transform = T.pose_inv(init_pose)
+            keypoint_centered = np.dot(centering_transform, np.append(self.keypoints[idx], 1))[:3]
+            curr_pose = T.pose2mat(PoseAPI.get_world_pose(prim_path))
+            keypoint = np.dot(curr_pose, np.append(keypoint_centered, 1))[:3]
+            keypoint_positions.append(keypoint)
+        return np.array(keypoint_positions)
+    def get_low_dim_obs(self):
+        
+        proprio = torch.cat(
+            (
+            self.get_arm_joint_postions(),
+            torch.tensor(self.get_ee_pose())
+            )
+        )
+        assert len(proprio)!=0
+        
+        raw_obs = super().get_obs()
+        for robot in raw_obs[0]:
+            proprio = torch.cat ((proprio, raw_obs[0][robot]['proprio']) )
+        
+        for obj in self.objs:
+            current_object = self.scene.object_registry("name", obj)
+            pos, orn = current_object.get_position_orientation()
+            proprio = torch.cat((proprio, pos, orn))
+        proprio = np.asarray(proprio)
+        return proprio
+    
+
+    def get_object_by_keypoint(self, keypoint_idx):
+        """
+        Args:
+            keypoint_idx (int): the index of the keypoint
+        Returns:
+            pointer: the object that the keypoint is associated with
+        Given the keypoint index, this function returns the name of the object that the keypoint is associated with.
+        """
+        assert hasattr(self, '_keypoint2object') and self._keypoint2object is not None, "Keypoints have not been registered yet."
+        return self._keypoint2object[keypoint_idx]
+
+    def get_random_position(self, obj, min_bounds, max_bounds):
+        
+        pos, orn = obj.get_position_orientation()
+        x = np.random.uniform(min_bounds[0], max_bounds[0])
+        y = np.random.uniform(min_bounds[1], max_bounds[1])
+        z = np.random.uniform(min_bounds[2], max_bounds[2])
+        z_angle = np.random.uniform(0, 2 * np.pi)
+        orn1 = T.quat_multiply(T.euler2quat(np.array([0, 0, z_angle])), np.array(orn))
+        return np.asarray([x,y,z]), np.array(orn)
+    
+
+    def get_cam_obs(self):
+        self.last_cam_obs = dict()
+        for cam_id in self.cams:
+            self.last_cam_obs[cam_id] = self.cams[cam_id].get_obs()  # each containing rgb, depth, points, seg
+        return self.last_cam_obs
+    
+    def _initialize_cameras(self, cam_config):
+        """
+        ::param poses: list of tuples of (position, orientation) of the cameras
+        """
+        self.cams = dict()
+        for cam_id in cam_config:
+            cam_id = int(cam_id)
+            self.cams[cam_id] = OGCamera(self, cam_config[cam_id])
+        for _ in range(10): og.sim.render() 
+    
+    def is_grasping(self, candidate_obj=None):
+        return self.robot.is_grasping(candidate_obj=candidate_obj) == IsGraspingState.TRUE
+
+    def get_ee_pose(self):
+        ee_pos, ee_xyzw = (self.robot.get_eef_position(), self.robot.get_eef_orientation())
+        ee_pose = np.concatenate([ee_pos, ee_xyzw])  # [7]
+        return ee_pose
+
+    def get_ee_pos(self):
+        return self.get_ee_pose()[:3]
+
+    def get_ee_quat(self):
+        return self.get_ee_pose()[3:]
+    
+    def get_arm_joint_postions(self):
+        assert isinstance(self.robot, Fetch), "The IK solver assumes the robot is a Fetch robot"
+        arm = self.robot.default_arm
+        dof_idx = np.concatenate([self.robot.trunk_control_idx, self.robot.arm_control_idx[arm]])
+        arm_joint_pos = self.robot.get_joint_positions()[dof_idx]
+        return arm_joint_pos
+
+
+
+
 class ReKepOGEnv:
-    def __init__(self, config, scene_file, verbose=False):
+    def __init__(self, config, scene_file, og_env, verbose=False, randomize=True):
         self.video_cache = []
+        self.traj = Trajectory()
         self.config = config
         self.verbose = verbose
         self.config['scene']['scene_file'] = scene_file
@@ -66,7 +405,7 @@ class ReKepOGEnv:
         self.interpolate_rot_step_size = self.config['interpolate_rot_step_size']
         # create omnigibson environment
         self.step_counter = 0
-        self.og_env = og.Environment(dict(scene=self.config['scene'], robots=[self.config['robot']['robot_config']], env=self.config['og_sim']))
+        self.og_env = og_env
         self.og_env.scene.update_initial_state()
         for _ in range(10): og.sim.step()
         # robot vars
@@ -76,9 +415,12 @@ class ReKepOGEnv:
         self.reset_joint_pos = self.robot.reset_joint_pos[dof_idx]
         self.world2robot_homo = T.pose_inv(T.pose2mat(self.robot.get_position_orientation()))
         # initialize cameras
-        self._initialize_cameras(self.config['camera'])
-        self.last_og_gripper_action = 1.0
+        self.og_env._initialize_cameras(self.config['camera'])
+        self.last_og_gripper_action = 1.0 
 
+         
+        
+ 
     # ======================================
     # = exposed functions
     # ======================================
@@ -131,17 +473,14 @@ class ReKepOGEnv:
         sdf_voxels = scene.compute_signed_distance(grid.astype(np.float32))
         # convert back to np array
         sdf_voxels = sdf_voxels.cpu().numpy()
-        # open3d has flipped sign from our convention
+        # open3d [has ]flipped sign from our convention
         sdf_voxels = -sdf_voxels
         sdf_voxels = sdf_voxels.reshape(shape)
         self.verbose and print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] SDF voxels computed in {time.time() - start:.4f} seconds{bcolors.ENDC}')
         return sdf_voxels
 
     def get_cam_obs(self):
-        self.last_cam_obs = dict()
-        for cam_id in self.cams:
-            self.last_cam_obs[cam_id] = self.cams[cam_id].get_obs()  # each containing rgb, depth, points, seg
-        return self.last_cam_obs
+        return self.og_env.get_cam_obs()
     
     def register_keypoints(self, keypoints):
         """
@@ -151,42 +490,7 @@ class ReKepOGEnv:
             None
         Given a set of keypoints in the world frame, this function registers them so that their newest positions can be accessed later.
         """
-        if not isinstance(keypoints, np.ndarray):
-            keypoints = np.array(keypoints)
-        self.keypoints = keypoints
-        self._keypoint_registry = dict()
-        self._keypoint2object = dict()
-        exclude_names = ['wall', 'floor', 'ceiling', 'table', 'fetch', 'robot']
-        for idx, keypoint in enumerate(keypoints):
-            closest_distance = np.inf
-            for obj in self.og_env.scene.objects:
-                if any([name in obj.name.lower() for name in exclude_names]):
-                    continue
-                for link in obj.links.values():
-                    for mesh in link.visual_meshes.values():
-                        mesh_prim_path = mesh.prim_path
-                        mesh_type = mesh.prim.GetPrimTypeInfo().GetTypeName()
-                        if mesh_type == 'Mesh':
-                            trimesh_object = mesh_prim_mesh_to_trimesh_mesh(mesh.prim)
-                        else:
-                            trimesh_object = mesh_prim_shape_to_trimesh_mesh(mesh.prim)
-                        world_pose_w_scale = PoseAPI.get_world_pose_with_scale(mesh.prim_path)
-                        trimesh_object.apply_transform(world_pose_w_scale)
-                        points_transformed = trimesh_object.sample(1000)
-                        
-                        # find closest point
-                        dists = np.linalg.norm(points_transformed - keypoint, axis=1)
-                        point = points_transformed[np.argmin(dists)]
-                        distance = np.linalg.norm(point - keypoint)
-                        if distance < closest_distance:
-                            closest_distance = distance
-                            closest_prim_path = mesh_prim_path
-                            closest_point = point
-                            closest_obj = obj
-            self._keypoint_registry[idx] = (closest_prim_path, PoseAPI.get_world_pose(closest_prim_path))
-            self._keypoint2object[idx] = closest_obj
-            # overwrite the keypoint with the closest point
-            self.keypoints[idx] = closest_point
+        self.og_env.register_keypoints(keypoints)
 
     def get_keypoint_positions(self):
         """
@@ -196,16 +500,7 @@ class ReKepOGEnv:
             np.ndarray: keypoints in the world frame of shape (N, 3)
         Given the registered keypoints, this function returns their current positions in the world frame.
         """
-        assert hasattr(self, '_keypoint_registry') and self._keypoint_registry is not None, "Keypoints have not been registered yet."
-        keypoint_positions = []
-        for idx, (prim_path, init_pose) in self._keypoint_registry.items():
-            init_pose = T.pose2mat(init_pose)
-            centering_transform = T.pose_inv(init_pose)
-            keypoint_centered = np.dot(centering_transform, np.append(self.keypoints[idx], 1))[:3]
-            curr_pose = T.pose2mat(PoseAPI.get_world_pose(prim_path))
-            keypoint = np.dot(curr_pose, np.append(keypoint_centered, 1))[:3]
-            keypoint_positions.append(keypoint)
-        return np.array(keypoint_positions)
+        return self.og_env.get_keypoint_positions()
 
     def get_object_by_keypoint(self, keypoint_idx):
         """
@@ -215,8 +510,8 @@ class ReKepOGEnv:
             pointer: the object that the keypoint is associated with
         Given the keypoint index, this function returns the name of the object that the keypoint is associated with.
         """
-        assert hasattr(self, '_keypoint2object') and self._keypoint2object is not None, "Keypoints have not been registered yet."
-        return self._keypoint2object[keypoint_idx]
+        return self.og_env.get_object_by_keypoint(keypoint_idx)
+    
 
     def get_collision_points(self, noise=True):
         """
@@ -258,62 +553,75 @@ class ReKepOGEnv:
         collision_points = np.concatenate(collision_points, axis=0)
         return collision_points
 
-    def reset(self):
-        self.og_env.reset()
+    
+
+    def reset(self, objs=None):
+        
+        self.og_env.reset(objs)
         self.robot.reset()
+        
+
         for _ in range(5): self._step()
         self.open_gripper()
         # moving arm to the side to unblock view 
-        ee_pose = self.get_ee_pose()
+        
+        ee_pose = self.og_env.get_ee_pose()
         ee_pose[:3] += np.array([0.0, -0.2, -0.1])
         action = np.concatenate([ee_pose, [self.get_gripper_null_action()]])
         self.execute_action(action, precise=True)
         self.video_cache = []
+        
         print(f'{bcolors.HEADER}Reset done.{bcolors.ENDC}')
+        self.step_counter=0
+        self.traj.clear()
 
+    
+
+  
     def is_grasping(self, candidate_obj=None):
         return self.robot.is_grasping(candidate_obj=candidate_obj) == IsGraspingState.TRUE
 
     def get_ee_pose(self):
-        ee_pos, ee_xyzw = (self.robot.get_eef_position(), self.robot.get_eef_orientation())
-        ee_pose = np.concatenate([ee_pos, ee_xyzw])  # [7]
-        return ee_pose
+        return self.og_env.get_ee_pose()
 
     def get_ee_pos(self):
-        return self.get_ee_pose()[:3]
+        return self.og_env.get_ee_pose()[:3]
 
     def get_ee_quat(self):
-        return self.get_ee_pose()[3:]
+        return self.og_env.get_ee_pose()[3:]
     
     def get_arm_joint_postions(self):
-        assert isinstance(self.robot, Fetch), "The IK solver assumes the robot is a Fetch robot"
-        arm = self.robot.default_arm
-        dof_idx = np.concatenate([self.robot.trunk_control_idx, self.robot.arm_control_idx[arm]])
-        arm_joint_pos = self.robot.get_joint_positions()[dof_idx]
-        return arm_joint_pos
+        return self.og_env.get_arm_joint_postions()
 
     def close_gripper(self):
         """
         Exposed interface: 1.0 for closed, -1.0 for open, 0.0 for no change
         Internal OG interface: 1.0 for open, 0.0 for closed
         """
+         
+
         if self.last_og_gripper_action == 0.0:
             return
         action = np.zeros(12)
         action[10:] = [0, 0]  # gripper: float. 0. for closed, 1. for open.
-        for _ in range(30):
-            self._step(action)
-        self.last_og_gripper_action = 0.0
+        
+        for _ in range(10):
+            out = self._step(action)
+            self.traj.add_step(*out, is_grasping_releasing=True)
 
+        self.last_og_gripper_action = 0.0
+       
     def open_gripper(self):
+        
         if self.last_og_gripper_action == 1.0:
             return
         action = np.zeros(12)
         action[10:] = [1, 1]  # gripper: float. 0. for closed, 1. for open.
-        for _ in range(30):
-            self._step(action)
+        for _ in range(10):
+            out = self._step(action)
+            self.traj.add_step(*out, is_grasping_releasing=True)  
         self.last_og_gripper_action = 1.0
-
+        
     def get_last_og_gripper_action(self):
         return self.last_og_gripper_action
     
@@ -337,6 +645,7 @@ class ReKepOGEnv:
     def execute_action(
             self,
             action,
+            contact_rich=False,
             precise=True,
         ):
             """
@@ -348,8 +657,10 @@ class ReKepOGEnv:
             Returns:
                 tuple: A tuple containing the position and rotation errors after reaching the target pose.
             """
+            
+
             if precise:
-                pos_threshold = 0.03
+                pos_threshold = 0.02
                 rot_threshold = 3.0
             else:
                 pos_threshold = 0.10
@@ -389,11 +700,14 @@ class ReKepOGEnv:
             # move faster for intermediate poses
             intermediate_pos_threshold = 0.10
             intermediate_rot_threshold = 5.0
+             
             for pose in pose_seq[:-1]:
-                self._move_to_waypoint(pose, intermediate_pos_threshold, intermediate_rot_threshold)
+                waypoint_traj = self._move_to_waypoint(pose, intermediate_pos_threshold, intermediate_rot_threshold, contact_rich=contact_rich)
+              
             # move to the final pose with required precision
             pose = pose_seq[-1]
-            self._move_to_waypoint(pose, pos_threshold, rot_threshold, max_steps=20 if not precise else 40) 
+            waypoint_traj = self._move_to_waypoint(pose, pos_threshold, rot_threshold, max_steps=20 if not precise else 40, contact_rich=contact_rich) 
+          
             # compute error
             pos_error, rot_error = self.compute_target_delta_ee(target_pose)
             self.verbose and print(f'\n{bcolors.BOLD}[environment.py | {get_clock_time()}] Move to pose completed (pos_error: {pos_error}, rot_error: {np.rad2deg(rot_error)}){bcolors.ENDC}\n')
@@ -402,16 +716,21 @@ class ReKepOGEnv:
             # = apply gripper action
             # ======================================
             if gripper_action == self.get_gripper_open_action():
-                self.open_gripper()
+                open_gripper_traj = self.open_gripper()
+               
+
             elif gripper_action == self.get_gripper_close_action():
-                self.close_gripper()
+                close_gripper_traj = self.close_gripper()
+                 
+
             elif gripper_action == self.get_gripper_null_action():
                 pass
+                
             else:
                 raise ValueError(f"Invalid gripper action: {gripper_action}")
-            
-            return pos_error, rot_error
-    
+            print(f'Action done, no. steps taken: {self.step_counter}')
+
+
     def sleep(self, seconds):
         start = time.time()
         while time.time() - start < seconds:
@@ -426,6 +745,7 @@ class ReKepOGEnv:
         for rgb in self.video_cache:
             video_writer.append_data(rgb)
         video_writer.close()
+
         return save_path
 
     # ======================================
@@ -452,10 +772,11 @@ class ReKepOGEnv:
             return True, pos_error, rot_error
         return False, pos_error, rot_error
 
-    def _move_to_waypoint(self, target_pose_world, pos_threshold=0.02, rot_threshold=3.0, max_steps=10):
+    def _move_to_waypoint(self, target_pose_world, pos_threshold=0.02, rot_threshold=3.0, max_steps=10, contact_rich=False):
         pos_errors = []
         rot_errors = []
         count = 0
+       
         while count < max_steps:
             reached, pos_error, rot_error = self._check_reached_ee(target_pose_world[:3], target_pose_world[3:7], pos_threshold, rot_threshold)
             pos_errors.append(pos_error)
@@ -468,21 +789,33 @@ class ReKepOGEnv:
             relative_position = target_pose_robot[:3, 3] - self.robot.get_relative_eef_position().numpy()
             relative_quat = T.quat_distance(T.mat2quat(target_pose_robot[:3, :3]), self.robot.get_relative_eef_orientation().numpy())
             assert isinstance(self.robot, Fetch), "this action space is only for fetch"
-            action = np.zeros(12)  # first 3 are base, which we don't use
+            action = np.zeros(12)  # first 4 are base, which we don't use
             action[4:7] = relative_position
             action[7:10] = T.quat2axisangle(relative_quat)
             action[10:] = [self.last_og_gripper_action, self.last_og_gripper_action]
             # step the action
-            _ = self._step(action=action)
+            out = self._step(action=action)
             count += 1
+           
+            self.traj.add_step(*out, is_grasping_releasing=contact_rich)
+
         if count == max_steps:
+           
             print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] OSC pose not reached after {max_steps} steps (pos_error: {pos_errors[-1].round(4)}, rot_error: {np.rad2deg(rot_errors[-1]).round(4)}){bcolors.ENDC}')
+
+     
 
     def _step(self, action=None):
         if hasattr(self, 'disturbance_seq') and self.disturbance_seq is not None:
             next(self.disturbance_seq)
+        
+        should_return = False
         if action is not None:
-            self.og_env.step(action)
+            should_return=True
+            o = self.og_env.get_low_dim_obs()
+           # print(o)
+            next_o, reward, terminated, truncated, info = self.og_env.step(action)
+
         else:
             og.sim.step()
         cam_obs = self.get_cam_obs()
@@ -492,14 +825,9 @@ class ReKepOGEnv:
         else:
             self.video_cache.pop(0)
             self.video_cache.append(rgb)
+
         self.step_counter += 1
 
-    def _initialize_cameras(self, cam_config):
-        """
-        ::param poses: list of tuples of (position, orientation) of the cameras
-        """
-        self.cams = dict()
-        for cam_id in cam_config:
-            cam_id = int(cam_id)
-            self.cams[cam_id] = OGCamera(self.og_env, cam_config[cam_id])
-        for _ in range(10): og.sim.render()
+        if should_return:
+            return (o, action[4:], reward, terminated, "", info, next_o)
+     

@@ -475,6 +475,9 @@ def quat2mat(quaternion):
     """
     return R.from_quat(quaternion).as_matrix()
 
+def axisangle2mat(axis, angle):
+        """Convert axis-angle to rotation matrix."""
+        return R.from_rotvec(axis * angle).as_matrix()
 
 def quat2axisangle(quat):
     """
@@ -489,7 +492,33 @@ def quat2axisangle(quat):
     """
     return R.from_quat(quat).as_rotvec()
 
+def align_rotation_with_axis(ee_rotation_matrix, alignment_axis, alignment_angle):
+    """
+    Align the end-effector rotation matrix with a given axis and angle.
 
+    Args:
+        ee_rotation_matrix (np.array): (3x3) Current end-effector rotation matrix.
+        alignment_axis (np.array): (3,) Axis of alignment.
+        alignment_angle (float): Angle (radians) to rotate around the alignment axis.
+
+    Returns:
+        np.array: (3x3) Updated rotation matrix after alignment.
+    """
+    # Normalize the alignment axis
+    alignment_axis = alignment_axis / np.linalg.norm(alignment_axis)
+    
+    # Create axis-angle vector
+    alignment_vec = alignment_axis * alignment_angle
+    
+    # Get the alignment rotation matrix using axisangle2mat
+    alignment_rotation = axisangle2mat(alignment_vec)
+    
+    # Apply the alignment rotation to the current end-effector rotation
+    new_rotation_matrix = alignment_rotation @ ee_rotation_matrix
+    
+    return new_rotation_matrix
+    
+ 
 def axisangle2quat(vec):
     """
     Converts scaled axis-angle to quat.

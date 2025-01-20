@@ -58,7 +58,8 @@ Suppose you are controlling a robot to perform manipulation tasks by writing con
 - The keypoints marked on the image start with index 0, same as the given argument `keypoints` array.
 - For a point `i` to be relative to another point `j`, the function should define an `offsetted_point` variable that has the delta added to keypoint `j and then calculate the norm of the xyz coordinates of the keypoint `i` and the `offsetted_point`.
 - If you would like to specify a location not marked by a keypoint, try using multiple keypoints to specify the location (e.g., you may take the mean of multiple keypoints if the desired location is in the center of those keypoints).
-
+- If there are multiple keypoints on an object, try to pick the most centered one, unless picking another keypoint is more appropriate
+- Ensure Temporal continuity. For example, if the task if to place a watermelon into a cabinet, ensure that you open the cabinet wide enough to account for later stages.
 **Structure your output in a single python code block as follows:**
 ```python
 

@@ -1,4 +1,4 @@
-device: &device 'cpu'
+device: &device 'cuda'
 seed: &seed 0
 
 main:
@@ -6,14 +6,15 @@ main:
   interpolate_rot_step_size: &interpolate_rot_step_size 0.34  # about 20 degrees
   grasp_depth: 0.10
   constraint_tolerance: 0.10  # for backtracking
-  bounds_min: &bounds_min [-0.45, -0.75, 0.698]
-  bounds_max: &bounds_max [0.10, 0.60, 1.2]
+  bounds_min: &bounds_min [-1, -1, 0.698]
+  bounds_max: &bounds_max [1, 1, 1.5]
   sdf_voxel_size: 0.01
   vlm_camera: 0
   action_steps_per_iter: 5
   seed: *seed
 
 env:
+  flatten_obs_space: True
   video_cache_size: 2000
   og_sim:
     physics_frequency: 60
@@ -24,7 +25,6 @@ env:
     name: Rs_int
     type: InteractiveTraversableScene
     scene_model: Rs_int
-
   bounds_min: *bounds_min
   bounds_max: *bounds_max
   interpolate_pos_step_size: *interpolate_pos_step_size
@@ -34,7 +34,7 @@ env:
     robot_config:
       name: Fetch
       type: Fetch
-      obs_modalities: [rgb, depth]
+      obs_modalities: [rgb, depth, proprio]
       action_modalities: continuous
       action_normalize: False
       position: [-0.8, 0.0, 0.]
@@ -66,7 +66,7 @@ env:
     # vlm camera
     0:
       name: cam_0
-      position: [-0.1655,  0.0167,  1.3664]
+      position: [-0.1655,  0.0167,  1.8664]
       orientation: [ 0.0550,  0.0544,  0.7010,  0.7090]
       resolution: 480
 
