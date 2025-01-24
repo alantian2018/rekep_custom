@@ -47,13 +47,12 @@ class ReKepCollector:
         self.env = ReKepOGEnv(global_config['env'], scene_file, og_env, verbose=False, randomize=randomize)
         print('ENV created')
       
-        self.pen = self.env.og_env.scene.object_registry("name", "pen_1")
         self.randomize=randomize
         self.rekep_program_dir = rekep_program_dir
         self.paths = []
         #min_bounds =  [-0.5, -0.5, 0.78]   
         #max_bounds = [0.0, 0.0, 0.8]
-        #self.pos, self.orn = self.set_random_xyz_position(self.pen, min_bounds, max_bounds)
+       
         
 
         # setup ik solver (for reachability cost)

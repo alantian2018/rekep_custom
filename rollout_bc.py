@@ -18,6 +18,7 @@ import time
 import os
 import imageio
 from environment import *
+from rollout_based_on_dataset import *
 from tqdm import tqdm
 from utils import (
     bcolors,
@@ -30,26 +31,39 @@ from utils import (
 )
 import matplotlib.pyplot as plt
 
-def rollout(policy, environment, video_buffer,n):
-    
+
+
+
+def rollout(policy, environment, video_buffer,n, ee_points,ee_distance_data):
+   
+
     obs = environment.reset()
-    rewards = []
-    for i in tqdm(range (200), desc=f'Rollout: {n+1}'):
+    key = f'demo_{n+1}'
+    ee_distance_data[key] = []
+    for i in tqdm(range (80), desc=f'Rollout: {n+1}'):
         action = policy({'all' : obs})
         obs, r, done, _, __ = env.step(action)
-        rewards.append(r)
+        
+        ee_point = env.get_centered_ee('pen_1')
+        ee_points.append(ee_point)
 
-        cam_obs = env.get_cam_obs()
-        rgb = cam_obs[1]['rgb']
-        video_buffer.append_data(rgb)
+        bbox = environment.get_aabb('pen_1')
+        distance = calculate_bbox_to_point(bbox, environment.get_ee_pos())
+        ee_distance_data[key].append(distance)
 
+        if video_buffer is not None:
+            cam_obs = env.get_cam_obs()
+            rgb = cam_obs[1]['rgb']
+            video_buffer.append_data(rgb)
+        
         if (done):
             print('Done, breaking early....')
             break
-    return rewards
-        
+    ee_distance_data[key] = np.array(ee_distance_data[key])
+    return ee_distance_data[key]
+     
 
-
+ 
     
 
 
@@ -64,9 +78,9 @@ if __name__ == '__main__':
         
     )
     video_path = os.path.join(dir_path, 'videos/rollout.mp4')
-    rewards_path = os.path.join(dir_path, 'rewards.png')
+    dist_path = os.path.join(dir_path, 'distances.png')
 
-    video_buffer = imageio.get_writer(video_path, fps=20)
+    video_buffer = None #imageio.get_writer(video_path, fps=20)
      
     task_list = {
         'pen': {
@@ -87,20 +101,38 @@ if __name__ == '__main__':
 
     env = CustomOGEnv(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim']), config,
                                      randomize=True)
-
-
+    mesh = env.get_mesh('pen_1')
+    
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     policy, ckpt_dict = FileUtils.policy_from_checkpoint(ckpt_path=path_to_policy, device=device, verbose=True)
     
-    for i in range(5):
-        rewards = rollout(policy, env, video_buffer, i)
-        x = range(len(rewards)) 
-        plt.plot(x, rewards, label=f"Rollout {i + 1}")
+    ee_points = []
+    ee_distance_data=dict()
+    for i in range(200):
+        dist = rollout(policy, env, video_buffer, i, ee_points, ee_distance_data)
+        dist *= 100
+        x = range(len(dist)) 
+        print(f'MINIMUM DISTANCE: {min(dist)} cm')
+        plt.plot(x, dist, label=f"Rollout {i + 1}")
 
     plt.xlabel('step')
-    plt.ylabel('reward')
-    plt.savefig(rewards_path)
+    plt.ylabel('distance to pen (cm)')
+    plt.savefig(dist_path)
 
-    video_buffer.close()
-    print(f"video written to {video_path}")
+
+    path = os.path.join(dir_path,"trajectories/")
+    os.makedirs(path, exist_ok=True)
+
+    new_mesh = add_independent_points_to_ply(mesh, ee_points)
+    new_mesh.export(path+"bc_cr.ply")
+
+    ee_data = {'ee_points':ee_points, 'ee_distance_data':ee_distance_data}
+    ee_save_path = os.path.join(dir_path, 'ee_raw.pkl')
+    torch.save(ee_data, ee_save_path)
+    print(f'Saved ee data to {ee_save_path}')
+
+    breakpoint()
+    if video_buffer is not None:
+        video_buffer.close()
+        print(f"video written to {video_path}")

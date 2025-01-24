@@ -242,7 +242,63 @@ class CustomOGEnv(og.Environment):
             return self.get_low_dim_obs()
 
     def get_done(self):
+
         return self.is_grasping('pen_1')
+
+    def get_aabb(self, obj_name):
+        obj = self.scene.object_registry("name", obj_name)
+        return obj.aabb
+
+    def get_centered_ee(self, obj_name):
+        
+        #gets ee wrt obj_name
+        assert self.mesh_prim_path  is not None
+        obj = self.scene.object_registry("name", obj_name)
+        
+        ee = self.get_ee_pos()
+      
+        curr_pose = T.pose2mat(PoseAPI.get_world_pose(self.mesh_prim_path))
+        centering_transform = T.pose_inv(curr_pose)
+        
+
+        return np.dot(centering_transform, np.append(ee, 1))[:3]
+       
+        
+  
+
+    def get_mesh(self, obj_name):
+        obj = self.scene.object_registry("name", obj_name)
+        trimesh_objects = []
+        for link in obj.links.values():
+            for mesh in link.visual_meshes.values():
+                mesh_type = mesh.prim.GetPrimTypeInfo().GetTypeName()
+                if mesh_type == 'Mesh':
+                    trimesh_object = mesh_prim_mesh_to_trimesh_mesh(mesh.prim)
+                else:
+                    trimesh_object = mesh_prim_shape_to_trimesh_mesh(mesh.prim)
+                
+                
+                world_pose_w_scale = PoseAPI.get_world_pose_with_scale(mesh.prim_path)
+                trimesh_object.apply_transform(world_pose_w_scale)
+
+                pose = PoseAPI.get_world_pose(mesh.prim_path)
+                
+                matrix_pose = T.pose2mat(pose)
+                inverse_pose = T.pose_inv(matrix_pose)
+                self.mesh_prim_path = mesh.prim_path
+                trimesh_object.apply_transform(inverse_pose)
+                
+                # center the object but scale it accordingly
+                trimesh_objects.append(trimesh_object)
+                
+        scene_mesh = trimesh.util.concatenate(trimesh_objects)
+ 
+
+        
+        return scene_mesh
+
+                
+
 
     def register_keypoints(self, keypoints):
         """
