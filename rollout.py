@@ -12,6 +12,8 @@ from environment import *
 from signal import signal, SIGINT
 from sys import exit
 from argparse import ArgumentParser
+import matplotlib.pyplot as plt
+
 os.environ['KMP_DUPLICATE_LIB_OK'] = "True"
 
 # Add and parse arguments
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     
     # Grab name of this rollout combo
     video_name = "{}-{}".format(
-        'pen', env_args['algorithm_kwargs']['task_list']['pen']['instruction']).replace("_", "-")
+        'pen', env_args['task_list']['pen']['instruction']).replace("_", "-")
     # Calculate appropriate fps
      
     # Define video writer
@@ -72,22 +74,35 @@ if __name__ == "__main__":
     variant = env_args
     print(f'variant: {variant}')
     
-    config['scene']['scene_file'] = variant['algorithm_kwargs']['task_list']['pen']['scene_file']
+    config['scene']['scene_file'] = variant['task_list']['pen']['scene_file']
 
     env = CustomOGEnv(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim']), config,
                                      randomize=True)
+    env.set_rekep_program_dir(variant['rekep_program_dir'])
+    env.set_reward_function_for_stage(1)
     
-    
-    simulate_policy(
+    paths  = simulate_policy(
         env=env,
         model_path=os.path.join(args.load_dir, "params.pkl"),
         horizon=variant['algorithm_kwargs']['eval_max_path_length'],
         render=False,
         video_writer=video_writer,
-        num_episodes=5,
+        num_episodes=10,
         printout=True,
         use_gpu=False,
     )
+    
+    for c,i in enumerate(paths):
+        r = i['rewards']
+        x = range(len(r)) 
+        plt.plot(x, r, label=f"Rollout {c + 1}")
+    plt.xlabel('step')
+    plt.ylabel('reward')
+
+    reward_path =os.path.join(args.load_dir, 'rewards.png')
+    plt.savefig(reward_path)
+        
     if video_writer is not None:
         print('Writing video to {}'.format(video_path))
         video_writer.close()
+    breakpoint()

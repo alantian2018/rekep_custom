@@ -41,12 +41,14 @@ def run_experiment(debug=False):
     )
     
     # Construct variant to train
+    model_path = '/nethome/atian31/flash8/repos/ReKep/pen_pickup_models/Pen_Pickup_rnn/20250120004223/models/model_epoch_2893_best_validation_14653.164111328126.pth'
+    rekep_program_dir='/nethome/atian31/flash8/repos/ReKep/vlm_query/2025-01-19_02-06-17_pick_up_the_white_pen_in_the_middle._'
     if not debug:
         variant = dict(
             algorithm="SAC",
             seed=1,
             version="normal",
-            expert_buffer_size=int(1E6),
+            model=model_path,
             normal_buffer_size=int(1E6),
             qf_kwargs=dict(
                 hidden_sizes=[256,256],
@@ -54,32 +56,28 @@ def run_experiment(debug=False):
             policy_kwargs=dict(
                 hidden_sizes=[256,256],
             ),
-            
-
+            rekep_program_dir=rekep_program_dir,
+            task_list=task_list,
             algorithm_kwargs=dict(
-                num_epochs=500,
-                num_eval_steps_per_epoch=1000,
-                num_trains_per_train_loop=1250,
-                num_expl_steps_per_train_loop=2500,
-                min_num_steps_before_training=3300,
-                expl_max_path_length=250,
-                eval_max_path_length=250,
+                num_epochs=1000,
+                num_eval_steps_per_epoch=320,
+                num_trains_per_train_loop=600,
+                num_expl_steps_per_train_loop=800,
+                min_num_steps_before_training=1200,
+                expl_max_path_length=80,
+                eval_max_path_length=80,
                 batch_size=128,
-                number_rekep_paths=1,
-                add_rekep_every_n=50,
-                task_list=task_list
-
             ),
             trainer_kwargs=trainer_kwargs,
-        # expl_environment_kwargs=get_expl_env_kwargs(args),
-        # eval_environment_kwargs=get_eval_env_kwargs(args),
+       
         )
-    else:
+    else: # debug
         variant = dict(
+            
             algorithm="SAC",
             seed=1,
             version="normal",
-            expert_buffer_size=int(1E6),
+            model = model_path,
             normal_buffer_size=int(1E6),
             qf_kwargs=dict(
                 hidden_sizes=[256,256],
@@ -87,8 +85,8 @@ def run_experiment(debug=False):
             policy_kwargs=dict(
                 hidden_sizes=[256,256],
             ),
-            
-
+            task_list=task_list,
+            rekep_program_dir=rekep_program_dir,
             algorithm_kwargs=dict(
                 num_epochs=500,
                 num_eval_steps_per_epoch=50,
@@ -98,14 +96,9 @@ def run_experiment(debug=False):
                 expl_max_path_length=10,
                 eval_max_path_length=10,
                 batch_size=128,
-                number_rekep_paths=1,
-                add_rekep_every_n=2,
-                task_list=task_list
-
             ),
             trainer_kwargs=trainer_kwargs,
-        # expl_environment_kwargs=get_expl_env_kwargs(args),
-        # eval_environment_kwargs=get_eval_env_kwargs(args),
+
         )
     variant['randomize'] = True #not debug
     # Set logging

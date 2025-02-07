@@ -11,17 +11,6 @@ import trimesh
 import open3d as o3d
 import numpy as np
 
-def calculate_bbox_to_point(bbox, p):
-    min_x, max_x = min(bbox[0][0],bbox[1][0]), max(bbox[0][0],bbox[1][0])
-    min_y, max_y = min(bbox[0][1],bbox[1][1]), max(bbox[0][1],bbox[1][1])
-    min_z, max_z = min(bbox[0][2],bbox[1][2]), max(bbox[0][2],bbox[1][2]) 
-    
-    dx = max(min_x - p[0], 0, p[0] - max_x)
-    dy = max(min_y - p[1], 0, p[1] - max_y)
-    dz = max(min_z - p[2], 0, p[2] - max_z)
-
-    return (dx*dx + dy*dy + dz*dz)**.5
-
 def add_independent_points_to_ply(mesh, points, radius=0.0007):
     """
     Add new independent points to a PLY file that already contains a mesh.

@@ -15,9 +15,10 @@ from rlkit.exploration_strategies.base import PolicyWrappedWithExplorationStrate
 from rlkit.exploration_strategies.gaussian_strategy import GaussianStrategy
 from rlkit_custom import CustomTorchBatchRLAlgorithm
 from rlkit_custom import CustomEnvReplayBuffer
+from rlkit.data_management.env_replay_buffer import EnvReplayBuffer
 from rlkit.core import logger
 from environment import *
-
+from tqdm import tqdm
 import numpy as np
 
 from utils import get_config
@@ -25,17 +26,20 @@ from utils import get_config
 AGENTS = {"SAC", "TD3"}
 
 
+ 
 def experiment(variant, agent="SAC"):
     global_config = get_config(config_path="./configs/config.yaml")
     config = global_config['env']
     print(f'variant: {variant}')
-    config['scene']['scene_file'] = variant['algorithm_kwargs']['task_list']['pen']['scene_file']
+    config['scene']['scene_file'] = variant['task_list']['pen']['scene_file']
 
-    eval_env = CustomOGEnv(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim']), config,
-                                     randomize=variant['randomize'])
+    eval_env = RLEnvWrapper(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim']), config,
+                                     randomize=variant['randomize'], bc_policy = variant['model'])
+    eval_env.set_rekep_program_dir(variant['rekep_program_dir'])
+    eval_env.set_reward_function_for_stage(1)
     expl_env = eval_env
-    
-    obs_dim = expl_env.get_low_dim_obs().shape[0]
+   
+    obs_dim = expl_env.observation_size
     action_dim = 8
     print('made envs')
     qf1 = ConcatMlp(
@@ -113,12 +117,16 @@ def experiment(variant, agent="SAC"):
     else:
         print("Error: No valid agent chosen!")
 
-    replay_buffer = CustomEnvReplayBuffer(
+    if 'expert_buffer_size' in variant:
+        replay_buffer = CustomEnvReplayBuffer(
         variant['expert_buffer_size'],
         variant['normal_buffer_size'],
         expl_env,
         0.5
-    )
+        )
+    
+    else:
+        replay_buffer = EnvReplayBuffer(variant['normal_buffer_size'], expl_env)
 
     eval_path_collector = MdpPathCollector(
         eval_env,
@@ -130,6 +138,7 @@ def experiment(variant, agent="SAC"):
     )
 
     # Define algorithm
+  
     algorithm = CustomTorchBatchRLAlgorithm(
         trainer=trainer,
         exploration_env=expl_env,
@@ -140,6 +149,7 @@ def experiment(variant, agent="SAC"):
         **variant['algorithm_kwargs']
     )
     algorithm.to(ptu.device)
+    print('Begin train')
     algorithm.train()
 
 
@@ -232,7 +242,7 @@ def simulate_policy(
 
     # Create var to denote how many episodes we're at
     ep = 0
-
+    paths = []
     # Loop through simulation rollouts
     while ep < num_episodes:
         if printout:
@@ -244,6 +254,7 @@ def simulate_policy(
             render=render,
             video_writer=video_writer,
         )
+        paths.append(path)
 
         # Log diagnostics if supported by env
         if hasattr(env, "log_diagnostics"):
@@ -252,4 +263,6 @@ def simulate_policy(
 
         # Increment episode count
         ep += 1
+    return paths
+     
 

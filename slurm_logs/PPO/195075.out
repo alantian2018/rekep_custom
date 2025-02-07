@@ -1,0 +1,1718 @@
+/var/lib/slurm/slurmd/job195075/slurm_script: line 14: activate: No such file or directory
+2025-02-07 03:48:29.453706: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1738918109.472036 2352901 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1738918109.477693 2352901 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-02-07 03:48:29.497593: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+[INFO] [omnigibson.simulator] ----- Starting OmniGibson. This will take 10-30 seconds... -----
+[DEBUG] [asyncio] Using selector: EpollSelector
+[INFO] [omni.kit.telemetry.impl.sentry_extension] sentry is disabled for external build
+[INFO] [omni.kit.telemetry.impl.sentry_extension] sentry is disabled for external build
+[Info] [carb] Logging to file: /coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/omni/logs/Kit/Isaac-Sim/4.1/kit_20250207_034831.log
+2025-02-07 08:48:31 [0ms] [Warning] [omni.kit.app.plugin] No crash reporter present, dumps uploading isn't available.
+[0.326s] [ext: omni.kit.async_engine-0.0.0] startup
+[4.239s] [ext: omni.stats-1.0.1] startup
+[4.247s] [ext: omni.client-1.1.0] startup
+[4.304s] [ext: omni.datastore-0.0.0] startup
+[4.307s] [ext: omni.blobkey-1.1.0] startup
+[4.309s] [ext: omni.ujitso.default-1.0.0] startup
+[4.313s] [ext: omni.hsscclient-0.0.0] startup
+[4.316s] [ext: omni.rtx.shadercache.vulkan-1.0.0] startup
+[4.319s] [ext: omni.assets.plugins-0.0.0] startup
+[4.323s] [ext: omni.gpu_foundation-0.0.0] startup
+[4.342s] [ext: carb.windowing.plugins-1.0.0] startup
+2025-02-07 08:48:35 [4,289ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:35 [4,289ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+[4.348s] [ext: omni.kit.renderer.init-0.0.0] startup
+2025-02-07 08:48:35 [4,397ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2025-02-07 08:48:36 [4,865ms] [Warning] [carb.cudainterop.plugin] CUDA_VISIBLE_DEVICES environment variable is set.
+2025-02-07 08:48:36 [4,865ms] [Warning] [carb.cudainterop.plugin] Note CUDA device enumeration and Omniverse device enumeration are different.
+2025-02-07 08:48:36 [4,865ms] [Warning] [carb.cudainterop.plugin] Setting CUDA_VISIBLE_DEVICES can lead to undesired behavior or crashes.
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 565.57.01     | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | Quadro RTX 6000                  | Yes: 0 |     | 24822   MB | 10de      | 0          |
+|     |                                  |        |     |            | 1e30      | e3d96db8.. |
+|     |                                  |        |     |            | 3d        |            |
+|=============================================================================================|
+| OS: 20.04.6 LTS (Focal Fossa) ubuntu, Version: 20.04.6, Kernel: 5.4.0-204-generic
+| Processor: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz | Cores: 28 | Logical: 56
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 385574 | Free Memory: 372889
+| Total Page/Swap (MB): 2047 | Free Page/Swap: 2047
+|---------------------------------------------------------------------------------------------|
+[5.539s] [ext: omni.kit.pipapi-0.0.0] startup
+[5.542s] [ext: omni.kit.pip_archive-0.0.0] startup
+[5.543s] [ext: omni.mtlx-0.1.0] startup
+[5.544s] [ext: omni.usd.config-1.0.4] startup
+[5.600s] [ext: omni.gpucompute.plugins-0.0.0] startup
+[5.604s] [ext: omni.usd.libs-1.0.1] startup
+[5.814s] [ext: omni.kit.telemetry-0.5.0] startup
+[5.869s] [ext: omni.kit.loop-isaac-1.2.0] startup
+[5.872s] [ext: omni.kit.test-0.0.0] startup
+[5.952s] [ext: omni.appwindow-1.1.8] startup
+2025-02-07 08:48:37 [5,900ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,900ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+[5.961s] [ext: omni.kit.renderer.core-1.0.1] startup
+2025-02-07 08:48:37 [5,909ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,909ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:48:37 [5,921ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,921ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+[5.980s] [ext: omni.kit.renderer.capture-0.0.0] startup
+[5.985s] [ext: omni.kit.renderer.imgui-1.0.1] startup
+2025-02-07 08:48:37 [5,937ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,937ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:48:37 [5,940ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,940ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:48:37 [5,942ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:37 [5,942ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+[6.243s] [ext: omni.ui-2.23.11] startup
+[6.260s] [ext: omni.kit.mainwindow-1.0.3] startup
+[6.262s] [ext: carb.audio-0.1.0] startup
+[6.272s] [ext: omni.uiaudio-1.0.0] startup
+[6.274s] [ext: omni.kit.uiapp-0.0.0] startup
+[6.274s] [ext: omni.usd.schema.audio-0.0.0] startup
+[6.420s] [ext: omni.usd.schema.physx-106.0.20] startup
+[6.484s] [ext: omni.usd.schema.forcefield-106.0.20] startup
+[6.495s] [ext: omni.usd.schema.anim-0.0.0] startup
+[6.538s] [ext: omni.usd.schema.omniscripting-1.0.0] startup
+[6.550s] [ext: omni.usd.schema.omnigraph-1.0.0] startup
+[6.564s] [ext: omni.anim.graph.schema-106.0.2] startup
+[6.575s] [ext: omni.anim.navigation.schema-106.0.2] startup
+[6.583s] [ext: omni.usd.schema.isaac-2.1.0] startup
+[6.599s] [ext: omni.usd.schema.semantics-0.0.0] startup
+[6.606s] [ext: omni.usd.schema.geospatial-0.0.0] startup
+[6.613s] [ext: omni.usd.schema.scene.visualization-2.0.2] startup
+[6.617s] [ext: omni.graph.exec-0.9.3] startup
+[6.619s] [ext: omni.usd_resolver-1.0.0] startup
+[6.632s] [ext: omni.activity.core-1.0.1] startup
+[6.636s] [ext: omni.kit.usd_undo-0.1.8] startup
+[6.637s] [ext: omni.kit.exec.core-0.13.2] startup
+[6.642s] [ext: omni.usd.core-1.2.11] startup
+[6.652s] [ext: omni.kit.actions.core-1.0.0] startup
+[6.655s] [ext: omni.resourcemonitor-105.0.1] startup
+[6.659s] [ext: omni.kit.window.popup_dialog-2.0.24] startup
+[6.667s] [ext: omni.timeline-1.0.10] startup
+[6.670s] [ext: omni.kit.commands-1.4.9] startup
+[6.678s] [ext: usdrt.scenegraph-7.4.8] startup
+[6.756s] [ext: omni.kit.widget.nucleus_connector-1.1.8] startup
+[6.760s] [ext: omni.kit.audiodeviceenum-1.0.1] startup
+[6.763s] [ext: omni.hydra.usdrt_delegate-7.4.7] startup
+[6.839s] [ext: omni.hydra.scene_delegate-0.3.3] startup
+[6.859s] [ext: omni.kit.collaboration.telemetry-1.0.0] startup
+[6.861s] [ext: omni.usd-1.11.2] startup
+[6.943s] [ext: omni.kit.collaboration.channel_manager-1.0.11] startup
+[6.945s] [ext: omni.kit.usd.layers-2.1.31] startup
+[6.966s] [ext: omni.kit.collaboration.presence_layer-1.0.8] startup
+[6.972s] [ext: omni.kit.window.cursor-1.1.2] startup
+[6.975s] [ext: omni.kit.menu.utils-1.5.27] startup
+[6.998s] [ext: omni.iray.libs-0.0.0] startup
+[7.007s] [ext: omni.kit.primitive.mesh-1.0.16] startup
+[7.015s] [ext: omni.mdl.neuraylib-0.2.5] startup
+[7.018s] [ext: omni.hydra.engine.stats-1.0.2] startup
+[7.029s] [ext: omni.kit.widget.searchable_combobox-1.0.6] startup
+[7.031s] [ext: omni.kit.widget.path_field-2.0.9] startup
+[7.034s] [ext: omni.kit.clipboard-1.0.3] startFailed to create secure directory (/run/user/3314299/pulse): No such file or directory
+Failed to create secure directory (/run/user/3314299/pulse): No such file or directory
+[DEBUG] [AutoNode] Defining data type 'any' as 'Any'
+[DEBUG] [AutoNode] Defining data type 'bool' as 'Bool' and array 'BoolArray
+[DEBUG] [AutoNode] Defining data type 'bundle' as 'Bundle'
+[DEBUG] [AutoNode] Defining data type 'colord[3]' as 'Color3d' and array 'Color3dArray
+[DEBUG] [AutoNode] Defining data type 'colorf[3]' as 'Color3f' and array 'Color3fArray
+[DEBUG] [AutoNode] Defining data type 'colorh[3]' as 'Color3h' and array 'Color3hArray
+[DEBUG] [AutoNode] Defining data type 'colord[4]' as 'Color4d' and array 'Color4dArray
+[DEBUG] [AutoNode] Defining data type 'colorf[4]' as 'Color4f' and array 'Color4fArray
+[DEBUG] [AutoNode] Defining data type 'colorh[4]' as 'Color4h' and array 'Color4hArray
+[DEBUG] [AutoNode] Defining data type 'double' as 'Double' and array 'DoubleArray
+[DEBUG] [AutoNode] Defining data type 'double[2]' as 'Double2' and array 'Double2Array
+[DEBUG] [AutoNode] Defining data type 'double[3]' as 'Double3' and array 'Double3Array
+[DEBUG] [AutoNode] Defining data type 'double[4]' as 'Double4' and array 'Double4Array
+[DEBUG] [AutoNode] Defining data type 'execution' as 'Execution'
+[DEBUG] [AutoNode] Defining data type 'float' as 'Float' and array 'FloatArray
+[DEBUG] [AutoNode] Defining data type 'float[2]' as 'Float2' and array 'Float2Array
+[DEBUG] [AutoNode] Defining data type 'float[3]' as 'Float3' and array 'Float3Array
+[DEBUG] [AutoNode] Defining data type 'float[4]' as 'Float4' and array 'Float4Array
+[DEBUG] [AutoNode] Defining data type 'frame[4]' as 'Frame' and array 'FrameArray
+[DEBUG] [AutoNode] Defining data type 'half' as 'Half' and array 'HalfArray
+[DEBUG] [AutoNode] Defining data type 'half[2]' as 'Half2' and array 'Half2Array
+[DEBUG] [AutoNode] Defining data type 'half[3]' as 'Half3' and array 'Half3Array
+[DEBUG] [AutoNode] Defining data type 'half[4]' as 'Half4' and array 'Half4Array
+[DEBUG] [AutoNode] Defining data type 'int' as 'Int' and array 'IntArray
+[DEBUG] [AutoNode] Defining data type 'int[2]' as 'Int2' and array 'Int2Array
+[DEBUG] [AutoNode] Defining data type 'int[3]' as 'Int3' and array 'Int3Array
+[DEBUG] [AutoNode] Defining data type 'int[4]' as 'Int4' and array 'Int4Array
+[DEBUG] [AutoNode] Defining data type 'int64' as 'Int64' and array 'Int64Array
+[DEBUG] [AutoNode] Defining data type 'matrixd[2]' as 'Matrix2d' and array 'Matrix2dArray
+[DEBUG] [AutoNode] Defining data type 'matrixd[3]' as 'Matrix3d' and array 'Matrix3dArray
+[DEBUG] [AutoNode] Defining data type 'matrixd[4]' as 'Matrix4d' and array 'Matrix4dArray
+[DEBUG] [AutoNode] Defining data type 'normald[3]' as 'Normal3d' and array 'Normal3dArray
+[DEBUG] [AutoNode] Defining data type 'normalf[3]' as 'Normal3f' and array 'Normal3fArray
+[DEBUG] [AutoNode] Defining data type 'normalh[3]' as 'Normal3h' and array 'Normal3hArray
+[DEBUG] [AutoNode] Defining data type 'objectId' as 'ObjectId' and array 'ObjectIdArray
+[DEBUG] [AutoNode] Defining data type 'path' as 'Path'
+[DEBUG] [AutoNode] Defining data type 'pointd[3]' as 'Point3d' and array 'Point3dArray
+[DEBUG] [AutoNode] Defining data type 'pointf[3]' as 'Point3f' and array 'Point3fArray
+[DEBUG] [AutoNode] Defining data type 'pointh[3]' as 'Point3h' and array 'Point3hArray
+[DEBUG] [AutoNode] Defining data type 'quatd[4]' as 'Quatd' and array 'QuatdArray
+[DEBUG] [AutoNode] Defining data type 'quatf[4]' as 'Quatf' and array 'QuatfArray
+[DEBUG] [AutoNode] Defining data type 'quath[4]' as 'Quath' and array 'QuathArray
+[DEBUG] [AutoNode] Defining data type 'string' as 'String'
+[DEBUG] [AutoNode] Defining data type 'target' as 'Target'
+[DEBUG] [AutoNode] Defining data type 'texcoordd[2]' as 'TexCoord2d' and array 'TexCoord2dArray
+[DEBUG] [AutoNode] Defining data type 'texcoordf[2]' as 'TexCoord2f' and array 'TexCoord2fArray
+[DEBUG] [AutoNode] Defining data type 'texcoordh[2]' as 'TexCoord2h' and array 'TexCoord2hArray
+[DEBUG] [AutoNode] Defining data type 'texcoordd[3]' as 'TexCoord3d' and array 'TexCoord3dArray
+[DEBUG] [AutoNode] Defining data type 'texcoordf[3]' as 'TexCoord3f' and array 'TexCoord3fArray
+[DEBUG] [AutoNode] Defining data type 'texcoordh[3]' as 'TexCoord3h' and array 'TexCoord3hArray
+[DEBUG] [AutoNode] Defining data type 'timecode' as 'Timecode' and array 'TimecodeArray
+[DEBUG] [AutoNode] Defining data type 'token' as 'Token' and array 'TokenArray
+[DEBUG] [AutoNode] Defining data type 'uchar' as 'UChar' and array 'UCharArray
+[DEBUG] [AutoNode] Defining data type 'uint' as 'UInt' and array 'UIntArray
+[DEBUG] [AutoNode] Defining data type 'uint64' as 'UInt64' and array 'UInt64Array
+[DEBUG] [AutoNode] Defining data type 'vectord[3]' as 'Vector3d' and array 'Vector3dArray
+[DEBUG] [AutoNode] Defining data type 'vectorf[3]' as 'Vector3f' and array 'Vector3fArray
+[DEBUG] [AutoNode] Defining data type 'vectorh[3]' as 'Vector3h' and array 'Vector3hArray
+Warning: Possible version incompatibility. Attempting to load omni::fabric::IPath with version v0.2 against v0.1.
+Warning: Possible version incompatibility. Attempting to load omni::fabric::IPath with version v0.2 against v0.1.
+up
+[7.035s] [ext: omni.ujitso.processor.texture-1.0.0] startup
+[7.037s] [ext: omni.kit.widget.browser_bar-2.0.10] startup
+[7.040s] [ext: omni.kit.notification_manager-1.0.8] startup
+[7.044s] [ext: omni.volume-0.5.0] startup
+[7.049s] [ext: omni.ujitso.client-0.0.0] startup
+[7.050s] [ext: omni.kit.helper.file_utils-0.1.8] startup
+[7.053s] [ext: omni.kit.widget.nucleus_info-1.0.2] startup
+[7.055s] [ext: omni.kit.widget.filebrowser-2.10.48] startup
+[7.066s] [ext: omni.kit.search_core-1.0.5] startup
+[7.068s] [ext: omni.kit.widget.options_menu-1.1.4] startup
+[7.077s] [ext: omni.ui.scene-1.9.3] startup
+[7.088s] [ext: omni.kit.widget.search_delegate-1.0.4] startup
+[7.091s] [ext: omni.kit.widget.options_button-1.0.2] startup
+[7.093s] [ext: omni.kit.widget.context_menu-1.2.1] startup
+[7.096s] [ext: omni.kit.hotkeys.core-1.3.3] startup
+[7.098s] [ext: omni.kit.window.filepicker-2.10.34] startup
+[7.125s] [ext: omni.hydra.rtx-0.2.0] startup
+[7.170s] [ext: omni.kit.context_menu-1.8.0] startup
+[7.174s] [ext: omni.mdl-52.0.1] startup
+[7.197s] [ext: omni.kit.window.file_importer-1.1.11] startup
+[7.200s] [ext: omni.kit.raycast.query-1.0.5] startup
+[7.222s] [ext: omni.kit.viewport.registry-104.0.6] startup
+[7.223s] [ext: omni.kit.viewport.legacy_gizmos-1.0.15] startup
+[7.234s] [ext: omni.kit.material.library-1.4.4] startup
+[7.243s] [ext: omni.kit.window.file_exporter-1.0.29] startup
+[7.245s] [ext: omni.kit.hydra_texture-1.2.6] startup
+[7.260s] [ext: omni.kit.window.drop_support-1.0.2] startup
+[7.261s] [ext: omni.kit.widget.viewport-106.0.3] startup
+[7.270s] [ext: omni.kit.widget.filter-1.1.4] startup
+[7.271s] [ext: omni.kit.viewport.window-106.0.8] startup
+[7.305s] [ext: omni.kit.widget.settings-1.1.1] startup
+[7.309s] [ext: omni.kit.widget.prompt-1.0.7] startup
+[7.311s] [ext: omni.kit.viewport.utility-1.0.17] startup
+[7.312s] [ext: omni.kit.window.preferences-1.5.3] startup
+[7.338s] [ext: omni.kit.widget.live_session_management.ui-1.0.1] startup
+[7.344s] [ext: omni.kit.viewport.actions-106.0.3] startup
+[7.351s] [ext: omni.kit.widget.stage-2.10.26] startup
+[7.375s] [ext: omni.kit.stage_template.core-1.1.21] startup
+[7.377s] [ext: omni.kit.widget.live_session_management-1.2.18] startup
+[7.382s] [ext: omni.kit.viewport.menubar.core-106.0.2] startup
+[7.429s] [ext: omni.kit.manipulator.transform-104.7.5] startup
+[7.436s] [ext: omni.kit.stage_templates-1.2.3] startup
+[7.442s] [ext: omni.debugdraw-0.1.3] startup
+[7.459s] [ext: omni.kit.viewport.menubar.display-106.0.2] startup
+[7.462s] [ext: omni.kvdb-106.0.20] startup
+[7.466s] [ext: omni.inspect-1.0.1] startup
+[7.469s] [ext: omni.kit.window.file-1.3.52] startup
+[7.475s] [ext: omni.kit.window.content_browser_registry-0.0.6] startup
+[7.476s] [ext: omni.usdphysics-106.0.20] startup
+[7.485s] [ext: omni.convexdecomposition-106.0.20] startup
+[7.497s] [ext: omni.kit.window.content_browser-2.9.14] startup
+[7.518s] [ext: omni.usdphysics.ui-106.0.20] startup
+[7.564s] [ext: omni.localcache-106.0.20] startup
+[7.567s] [ext: omni.physx.foundation-106.0.20] startup
+[7.568s] [ext: omni.kit.widget.highlight_label-1.0.2] startup
+[7.570s] [ext: omni.graph.core-2.170.3] startup
+[7.579s] [ext: omni.kit.widget.searchfield-1.1.6] startup
+[7.582s] [ext: omni.physx.cooking-106.0.20] startup
+[7.637s] [ext: omni.kit.widget.text_editor-1.0.2] startup
+[7.641s] [ext: omni.graph.image.core-0.3.2] startup
+[7.656s] [ext: omni.kit.window.property-1.11.1] startup
+[7.663s] [ext: omni.physx-106.0.20] startup
+[7.690s] [ext: omni.kit.widget.toolbar-1.6.2] startup
+[7.708s] [ext: omni.kit.property.usd-3.21.28] startup
+[7.729s] [ext: omni.physx.stageupdate-106.0.20] startup
+[7.734s] [ext: omni.physx.commands-106.0.20] startup
+[7.740s] [ext: omni.kit.manipulator.tool.snap-1.4.5] startup
+[7.754s] [ext: omni.graph.tools-1.78.0] startup
+[7.828s] [ext: omni.physx.ui-106.0.20] startup
+[7.897s] [ext: omni.graph-1.135.0] startup
+[7.984s] [ext: omni.physx.demos-106.0.20] startup
+[8.047s] [ext: omni.graph.image.nodes-1.0.2] startup
+[8.056s] [ext: omni.graph.action_core-1.1.4] startup
+[8.081s] [ext: omni.isaac.version-1.1.0] startup
+[8.087s] [ext: omni.syntheticdata-0.6.7] startup
+[8.117s] [ext: omni.physx.graph-106.0.20] startup
+[8.164s] [ext: omni.isaac.nucleus-0.3.0] startup
+[8.189s] [ext: omni.physx.telemetry-106.0.20] startup
+[8.208s] [ext: omni.kit.manipulator.selector-1.1.1] startup
+[8.224s] [ext: omni.ui_query-1.1.2] startup
+[8.235s] [ext: omni.kit.widget.graph-1.12.8] startup
+[8.281s] [ext: omni.kit.property.material-1.9.4] startup
+[8.304s] [ext: omni.kit.window.extensions-1.4.9] startup
+[8.339s] [ext: omni.kit.property.physx-106.0.20] startup
+[8.514s] [ext: omni.graph.ui-1.70.0] startup
+[8.580s] [ext: omni.physx.vehicle-106.0.20] startup
+[8.631s] [ext: omni.kit.manipulator.viewport-107.0.0] startup
+[8.647s] [ext: omni.kit.viewport.manipulator.transform-106.0.1] startup
+[8.651s] [ext: omni.kit.ui_test-1.2.18] startup
+[8.661s] [ext: omni.graph.action_nodes-1.23.0] startup
+[8.707s] [ext: omni.physx.camera-106.0.20] startup
+[8.748s] [ext: omni.fabric.commands-1.1.4] startup
+[8.769s] [ext: omni.kit.manipulator.prim.core-107.0.3] startup
+[8.796s] [ext: omni.physx.cct-106.0.20] startup
+[8.825s] [ext: omni.graph.action-1.102.1] startup
+[8.830s] [ext: omni.graph.nodes-1.143.0] startup
+[8.897s] [ext: omni.graph.ui_nodes-1.25.1] startup
+[8.965s] [ext: omni.kit.manipulator.prim.fabric-106.0.1] startup
+[8.987s] [ext: omni.physics.tensors-106.0.20] startup
+[9.035s] [ext: omni.kit.graph.delegate.default-1.2.2] startup
+[9.044s] [ext: omni.kit.manipulator.prim.usd-106.0.1] startup
+[9.054s] [ext: omni.graph.bundle.action-2.0.4] startup
+[9.055s] [ext: omni.command.usd-1.0.3] startup
+[9.071s] [ext: omni.physx.tensors-106.0.20] startup
+[9.107s] [ext: omni.kit.graph.editor.core-1.5.3] startup
+[9.153s] [ext: omni.kit.manipulator.prim-106.0.0] startup
+[9.155s] [ext: omni.kit.manipulator.selection-104.0.9] startup
+[9.179s] [ext: omni.kit.widget.layers-1.7.9] startup
+[9.384s] [ext: omni.kit.window.toolbar-1.6.1] startup
+[9.411s] [ext: omni.kit.graph.usd.commands-1.3.1] startup
+[9.435s] [ext: omni.kit.widget.material_preview-1.0.16] startup
+[9.472s] [ext: omni.physx.supportui-106.0.20] startup
+[9.589s] [ext: omni.warp.core-1.2.1] startup
+[10.169s] [ext: omni.kit.window.material_graph-1.8.15] startup
+[10.215s] [ext: omni.kit.numpy.common-0.1.2] startup
+[10.228s] [ext: omni.warp-1.2.1] startup
+[10.242s] [ext: omni.sensors.tiled-0.0.4] startup
+[10.260s] [ext: omni.physx.bundle-106.0.20] startup
+[10.260s] [ext: omni.graph.scriptnode-1.19.1] startup
+[10.264s] [ext: omni.isaac.dynamic_control-1.3.8] startup
+[10.299s] [ext: omni.replicator.core-1.11.14] startup
+2025-02-07 08:48:41 [10,295ms] [Warning] [omni.replicator.core.scripts.annotators] Annotator PostProcessDispatch is already registered, overwriting annotator template
+[10.593s] [ext: omni.isaac.core-3.18.1] startup
+[11.015s] [ext: omni.graph.visualization.nodes-2.1.1] startup
+[11.102s] [ext: omni.isaac.core_nodes-1.16.1] startup
+[11.169s] [ext: omni.isaac.cloner-0.8.1] startup
+[11.189s] [ext: omni.isaac.ui-0.16.0] startup
+[11.252s] [ext: omni.kit.graph.widget.variables-2.1.0] startup
+[11.280s] [ext: omni.kit.graph.delegate.modern-1.10.6] startup
+[11.320s] [ext: omni.isaac.wheeled_robots-2.3.3] startup
+[11.391s] [ext: omni.isaac.gym-0.11.3] startup
+[11.414s] [ext: omni.graph.window.core-1.109.0] startup
+[11.539s] [ext: omni.isaac.debug_draw-1.1.0] startup
+[11.578s] [ext: omni.isaac.block_world-1.0.0] startup
+[11.600s] [ext: omni.graph.window.generic-1.24.0] startup
+[11.695s] [ext: omni.isaac.menu-0.5.0] startup
+[11.716s] [ext: omni.isaac.occupancy_map-1.0.2] startup
+[11.764s] [ext: omni.importer.mjcf-1.1.1] startup
+[11.798s] [ext: omni.graph.window.action-1.26.0] startup
+[11.835s] [ext: omni.kit.widget.calendar-1.0.8] startup
+[11.847s] [ext: omni.kit.actions.window-1.1.1] startup
+[11.860s] [ext: omni.sensors.nv.common-1.2.2-isaac] startup
+[11.901s] [ext: omni.kit.widget.extended_searchfield-1.0.28] startup
+[11.932s] [ext: omni.kit.hotkeys.window-1.4.5] startup
+[11.961s] [ext: omni.kit.selection-0.1.4] startup
+[11.969s] [ext: omni.sensors.nv.materials-1.2.1-isaac] startup
+[11.984s] [ext: omni.isaac.kit-1.13.0] startup
+[11.989s] [ex[WARNING] [omni.kit.profiler.window] remove _SpanInstance.__lt__ and use insort 'key' arg instead
+t: omni.kit.menu.create-1.0.13] startup
+[11.997s] [ext: omni.kit.menu.edit-1.1.24] startup
+[12.012s] [ext: omni.isaac.range_sensor-3.1.1] startup
+[12.074s] [ext: omni.sensors.nv.lidar-1.2.2-isaac] startup
+[12.094s] [ext: omni.sensors.nv.wpm-1.2.1-isaac] startup
+[12.098s] [ext: omni.kit.property.audio-1.0.11] startup
+[12.101s] [ext: omni.kit.widget.stage_icons-1.0.4] startup
+[12.109s] [ext: omni.kit.property.geometry-1.3.0] startup
+[12.118s] [ext: omni.kit.property.camera-1.0.6] startup
+[12.128s] [ext: omni.sensors.nv.radar-1.2.1-isaac] startup
+[12.157s] [ext: omni.hydra.scene_api-0.1.2] startup
+[12.188s] [ext: omni.kit.window.stage-2.5.10] startup
+[12.199s] [ext: omni.kit.property.render-1.1.1] startup
+[12.207s] [ext: omni.kit.property.light-1.0.8] startup
+[12.216s] [ext: omni.kit.menu.file-1.1.10] startup
+[12.227s] [ext: omni.kit.property.transform-1.5.1] startup
+[12.249s] [ext: omni.kit.menu.stage-1.2.5] startup
+[12.259s] [ext: omni.kit.profiler.window-2.2.1] startup
+2025-02-07 08:48:43 [12,333ms] [Warning] [omni.kit.profiler.window] remove _SpanInstance.__lt__ and use insort 'key' arg instead
+[12.399s] [ext: omni.kit.property.bundle-1.2.11] startup
+[12.414s] [ext: omni.isaac.sensor-12.7.1] startup
+[12.626s] [ext: omni.kit.property.layer-1.1.6] startup
+[12.650s] [ext: omni.kit.stage_column.variant-1.0.13] startup
+[12.670s] [ext: omni.kit.stage_column.payload-2.0.0] startup
+[12.692s] [ext: omni.isaac.scene_blox-0.1.2] startup
+[12.700s] [ext: omni.isaac.quadruped-1.4.5] startup
+[12.790s] [ext: omni.kit.viewport.menubar.camera-105.1.8] startup
+[12.839s] [ext: omni.isaac.lula-3.0.1] startup
+[12.870s] [ext: omni.isaac.surface_gripper-1.0.1] startup
+[12.884s] [ext: omni.kit.viewport.menubar.settings-106.0.1] startup
+[12.935s] [ext: omni.kit.viewport.menubar.render-106.1.3] startup
+[12.952s] [ext: omni.kit.manipulator.camera-105.0.5] startup
+[12.973s] [ext: omni.isaac.motion_generation-7.1.0] startup
+[13.002s] [ext: omni.isaac.manipulators-2.1.0] startup
+[13.025s] [ext: omni.kit.viewport.bundle-104.0.1] startup
+[13.026s] [ext: omni.kit.viewport.menubar.lighting-106.0.2] startup
+[13.062s] [ext: omni.isaac.universal_robots-0.3.5] startup
+[13.077s] [ext: omni.kit.ui.actions-1.0.1] startup
+[13.100s] [ext: omni.kit.widget.timeline-105.0.1] startup
+[13.130s] [ext: omni.kit.window.commands-0.2.5] startup
+[13.142s] [ext: omni.kit.window.console-0.2.12] startup
+[13.193s] [ext: omni.kit.window.script_editor-1.7.6] startup
+[13.201s] [ext: omni.kit.menu.common-1.1.5] startup
+[13.209s] [ext: omni.kit.window.status_bar-0.1.6] startup
+[13.233s] [ext: omni.rtx.window.settings-0.6.16] startup
+[13.248s] [ext: omni.kit.window.title-1.1.3] startup
+2025-02-07 08:48:44 [13,203ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:44 [13,203ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:48:44 [13,207ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2025-02-07 08:48:44 [13,207ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+[13.266s] [ext: omni.isaac.franka-0.4.1] startup
+[13.272s] [ext: omni.replicator.isaac-1.15.0] startup
+[13.373s] [ext: omni.replicator.replicator_yaml-2.0.5] startup
+[13.406s] [ext: omni.rtx.settings.core-0.6.0] startup
+[13.434s] [ext: omni.kit.widget.live-2.1.6] startup
+[13.461s] [ext: omni.isaac.cortex-0.3.8] startup
+[13.476s] [ext: omni.kit.viewport.rtx-104.0.1] startup
+[13.478s] [ext: semantics.schema.editor-0.3.6] startup
+[13.507s] [ext: semantics.schema.property-1.0.3] startup
+[13.520s] [ext: omni.kit.widget.cache_indicator-2.0.8] startup
+2025-02-07 08:48:44 [13,479ms] [Warning] [omni.kit.widget.cache_indicator.cache_state_menu] Unable to detect Omniverse Cache Server. File /nethome/atian31/.nvidia-omniverse/config/omniverse.toml is not found. Consider installing it for better IO performance.
+[13.535s] [ext: omni.isaac.utils-1.0.1] startup
+[13.555s] [ext: omni.isaac.cortex.sample_behaviors-1.0.5] startup
+[13.567s] [ext: omni.importer.urdf-1.14.1] startup
+[13.673s] [ext: omni.kit.window.stats-0.1.6] startup
+[13.704s] [ext: omnigibson_4_1_0-4.1.0] startup
+[13.709s] Simulation App Starting
+[16.902s] app ready
+Warning: Possible version incompatibility. Attempting to load omni::fabric::IStageReaderWriter with version v0.10 against v0.9.
+[INFO] [omnigibson.simulator] ---------- Welcome to OmniGibson! ----------
+[INFO] [omnigibson.simulator] Imported scene 0.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/robomimic/utils/file_utils.py:177: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt_dict = torch.load(ckpt_path)
+/coc/flash8/atian31/repos/OmniGibson/omnigibson/utils/python_utils.py:730: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  out = th.tensor(nums, dtype=dtype) if isinstance(nums, Iterable) else th.ones(dim, dtype=dtype) * nums
+/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/torch/functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1729647352509/work/aten/src/ATen/native/TensorShape.cpp:3595.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+ROBOMIMIC WARNING(
+    No private macro file found!
+    It is recommended to use a private macro file
+    To setup, run: python /nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/robomimic/scripts/setup_macros.py
+)
+Using oracle? True
+Which Algo? PPO
+Oracle reward True
+Starting kit application with the following args:  ['/coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.kit/omni/isaac/kit/simulation_app.py', '/coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/isaacsim/apps/omnigibson_4_1_0.kit', '--/app/tokens/exe-path=/coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/omni', '--/persistent/app/viewport/displayOptions=3094', '--/rtx/materialDb/syncLoads=True', '--/rtx/hydra/materialSyncLoads=True', '--/omni.kit.plugin/syncUsdLoads=True', '--/app/renderer/resolution/width=1280', '--/app/renderer/resolution/height=720', '--/app/window/width=1440', '--/app/window/height=900', '--/renderer/multiGpu/enabled=False', '--/app/fastShutdown=True', '--ext-folder', '/coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/isaacsim/exts', '--ext-folder', '/coc/flash8/atian31/miniconda3/envs/omnigibson/lib/python3.10/site-packages/isaacsim/apps', '--/physics/cudaDevice=0', '--portable', '--no-window', '--/app/window/hideUi=1']
+Passing the following args to the base kit application:  ['--oracle', '--algo', 'PPO']
+Warp 1.2.1 initialized:
+   CUDA Toolkit 11.8, Driver 12.7
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "Quadro RTX 6000" (23 GiB, sm_75, mempool enabled)
+   Kernel cache:
+     /nethome/atian31/.cache/warp/1.2.1
+DYNAMICS_TODO:
+  Make sure "omni.particle.system.core2" is a proper dependency.
+  For now, it can just be set to autoload.
+DYNAMICS_TODO:
+  Make sure "omni.particle.system.core2" is a proper dependency.
+  For now, it can just be set to autoload.
+
+                   ____________
+                  /          / \
+                 /          / /__
+                /          / /  /\
+               /__________/ /__/  \
+               \   _____  \ \__\  /
+                \  \  / \  \ \_/ /
+                 \  \/___\  \   /
+                  \__________\_/  
+       ___                  _  ____ _ _                     
+      / _ \ _ __ ___  _ __ (_)/ ___(_) |__  ___  ___  _ __  
+     | | | | '_ ` _ \| '_ \| | |  _| | '_ \/ __|/ _ \| '_ \ 
+     | |_| | | | | | | | | | | |_| | | |_) \__ \ (_) | | | |
+      \___/|_| |_| |_|_| |_|_|\____|_|_.__/|___/\___/|_| |_|
+
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Module omni.replicator.core.ogn.python._impl.nodes.OgnSemanticSegmentation cc3f83a load on device 'cuda:0' took 3.08 ms
+Loading environments:   0%|          | 0/10 [00:00<?, ?it/s][INFO] [omnigibson.simulator] Imported scene 1.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  10%|█         | 1/10 [00:11<01:42, 11.42s/it][INFO] [omnigibson.simulator] Imported scene 2.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  20%|██        | 2/10 [00:23<01:34, 11.82s/it][INFO] [omnigibson.simulator] Imported scene 3.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  30%|███       | 3/10 [00:35<01:24, 12.11s/it][INFO] [omnigibson.simulator] Imported scene 4.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  40%|████      | 4/10 [00:48<01:14, 12.46s/it][INFO] [omnigibson.simulator] Imported scene 5.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  50%|█████     | 5/10 [01:02<01:04, 12.90s/it][INFO] [omnigibson.simulator] Imported scene 6.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  60%|██████    | 6/10 [01:14<00:50, 12.60s/it][INFO] [omnigibson.simulator] Imported scene 7.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  70%|███████   | 7/10 [01:27<00:38, 12.80s/it][INFO] [omnigibson.simulator] Imported scene 8.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:48:48 [16,987ms] [Warning] [omni.kit.imgui_renderer.plugin] _createExtendCursor: No windowing.
+2025-02-07 08:48:48 [16,987ms] [Warning] [omni.kit.imgui_renderer.plugin] _createExtendCursor: No windowing.
+[17.713s] Simulation App Startup Complete
+[18.393s] [ext: omni.usd.schema.flow-106.0.8] startup
+[18.413s] [ext: omni.flowusd-106.0.15] startup
+2025-02-07 08:48:49 [18,382ms] [Warning] [omni.stageupdate.plugin] Deprecated: direct use of IStageUpdate callbacks is deprecated. Use IStageUpdate::getStageUpdate instead.
+[18.461s] [ext: omni.kit.widget.zoombar-1.0.5] startup
+[18.545s] [ext: omni.scene.visualization.core-105.4.13] startup
+2025-02-07 08:48:49 [18,512ms] [Warning] [omni.stageupdate.plugin] Deprecated: direct use of IStageUpdate callbacks is deprecated. Use IStageUpdate::getStageUpdate instead.
+[18.586s] [ext: omni.ramp-105.1.15] startup
+[18.601s] [ext: omni.kit.browser.core-2.3.11] startup
+[18.612s] [ext: omni.particle.system.core-105.1.6] startup
+2025-02-07 08:48:49 [18,574ms] [Warning] [omni.particle.system.core.scripts.extension] 
+            ATTENTION!: omni.particle.system.core is currently undergoing extensive (breaking) changes.
+            Please be aware that systems built with the existing extension will need to be rebuilt in
+            the USD Composer 2023.2 release.
+[18.643s] [ext: omni.kit.browser.folder.core-1.9.12] startup
+[18.659s] [ext: omni.particle.system.ui-105.1.10] startup
+[18.885s] [ext: omni.graph.window.particle.system-105.1.18] startup
+[18.978s] [ext: omni.particle.system.bundle-105.1.0] startup
+[19.350s] [ext: omni.physx.fabric-106.0.20] startup
+2025-02-07 08:48:57 [26,252ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:49:00 [29,477ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:00 [29,477ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:13 [42,412ms] [Warning] [omni.syntheticdata.plugin] OgnSdPostRenderVarToHost : rendervar copy from texture directly to host buffer is counter-performant. Please use copy from texture to device buffer first.
+2025-02-07 08:49:14 [43,156ms] [Warning] [omni.syntheticdata.plugin] OgnSdInstanceMapping missing valid input renderVar InstanceMappingInfoSDhost
+2025-02-07 08:49:14 [43,156ms] [Warning] [omni.syntheticdata.plugin] SdRenderVarToRawArray missing valid input renderVar BoundingBox2DTightSD
+2025-02-07 08:49:14 [43,156ms] [Warning] [omni.syntheticdata.plugin] SdRenderVarPtr missing valid input renderVar LdrColorSDhost
+2025-02-07 08:49:15 [43,934ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:49:21 [49,989ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:49:25 [54,008ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:25 [54,008ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:33 [62,610ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:49:37 [66,194ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:37 [66,194ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:46 [74,642ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:49:49 [78,559ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:49 [78,559ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:49:59 [87,815ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:50:02 [91,562ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:02 [91,562ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:12 [101,499ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:50:16 [105,315ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:16 [105,316ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:22 [110,950ms] [Warning] [omni.fabric.plugin] Found in attrNameSetToBucketId, but didn't find BucketId 143 in buckets
+
+2025-02-07 08:50:25 [113,659ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:50:28 [117,347ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:28 [117,348ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:37 [125,918ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:50:41 [130,451ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:41 [130,451ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:50:50 [139,373ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:50:54 [143,406ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  80%|████████  | 8/10 [01:40<00:25, 12.84s/it][INFO] [omnigibson.simulator] Imported scene 9.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments:  90%|█████████ | 9/10 [01:53<00:12, 12.83s/it][INFO] [omnigibson.simulator] Imported scene 10.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+[WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+Loading environments: 100%|██████████| 10/10 [02:06<00:00, 12.83s/it]Loading environments: 100%|██████████| 10/10 [02:06<00:00, 12.64s/it]
+previous errors about these collision meshes.
+2025-02-07 08:50:54 [143,406ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:51:03 [152,257ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:51:07 [156,224ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:51:07 [156,224ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:51:16 [165,279ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
+2025-02-07 08:51:20 [169,066ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:51:20 [169,066ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
+2025-02-07 08:52:54 [263,216ms] [Warning] [carb] Client omni.kit.viewport.legacy_gizmos has acquired [carb::settings::ISettings v1.0] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:52:55 [264,487ms] [Warning] [carb] Client omni.hydratexture.plugin has acquired [carb::settings::ISettings v1.0] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:52:55 [264,530ms] [Warning] [carb] Client omni.kit.viewport.legacy_gizmos has acquired [carb::dictionary::IDictionary v1.1] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:53:55 [324,231ms] [Warning] [carb] Client omni.hydratexture.plugin has acquired [carb::dictionary::IDictionary v1.1] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:53:56 [324,638ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:53:57 [325,868ms] [Warning] [carb] Client omni.stageupdate.plugin has acquired [omni::hydra::IOmniHydra v2.0] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:53:57 [326,032ms] [Warning] [carb] Client carb.scenerenderer-rtx.plugin has acquired [carb::settings::ISettings v1.0] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:53:57 [326,199ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:53:57 [326,201ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:53:57 [326,270ms] [Warning] [carb] Client rtx.multigpumanager.plugin has acquired [carb::settings::ISettings v1.0] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:54:59 [387,705ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:54:59 [387,708ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:54:59 [387,711ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:55:01 [389,696ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:55:01 [389,698ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:55:01 [389,701ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:55:01 [389,704ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:03 [452,055ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:03 [452,058ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:03 [452,060ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:03 [452,063ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:03 [452,066ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,348ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,352ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,356ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,360ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,363ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:56:05 [454,367ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,521ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,524ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,526ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,529ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,531ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,534ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:08 [517,537ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,329ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,331ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,334ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,337ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,340ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,343ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,345ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:57:11 [520,348ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,692ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,695ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,697ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,700ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,703ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,707ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,709ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,712ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:16 [584,715ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,746ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,750ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,753ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,756ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,759ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,762ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,765ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,767ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,770ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,773ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:58:19 [587,827ms] [Warning] [carb] Client omni.kit.viewport.legacy_gizmos has acquired [carb::input::IInput v1.2] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2025-02-07 08:59:25 [653,726ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,729ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,732ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,734ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,737ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,740ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,743ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,746ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,748ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,751ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:25 [653,755ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,278ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,281ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,284ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,287ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,290ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,293ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,295ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,298ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,302ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,305ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,309ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 08:59:28 [657,312ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,792ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,795ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,798ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,802ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,805ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,807ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,810ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,813ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,816ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,819ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,822ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,825ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:35 [723,828ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,751ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,755ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,759ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,763ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,767ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,771ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,774ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,778ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,781ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,784ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,786ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,790ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,793ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:00:39 [727,796ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,665ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,668ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,672ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,677ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,680ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,683ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,686ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,689ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,692ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,696ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,699ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,702ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,705ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,708ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:47 [795,711ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,145ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,150ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,154ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,159ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,163ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,167ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,172ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,176ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,181ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,185ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,189ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,194ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,198ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,202ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,206ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:01:51 [800,211ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,909ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,913ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,916ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,919ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,923ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,926ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,929ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,932ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,935ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,939ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,942ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,946ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,949ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,952ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,955ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,958ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:00 [868,961ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,953ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,956ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,961ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,966ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,971ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,975ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,978ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,982ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,985ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,989ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,992ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,995ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [873,998ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture.plugin was already released.
+2025-02-07 09:03:05 [874,002ms] [Warning] [carb] Plugin interface for a client: omni.hydratexture./nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py:150: UserWarning: You are trying to run PPO on the GPU, but it is primarily intended to run on the CPU when not using a CNN policy (you are using ActorCriticPolicy which should be a MlpPolicy). See https://github.com/DLR-RM/stable-baselines3/issues/1245 for more info. You can pass `device='cpu'` or `export CUDA_VISIBLE_DEVICES=` to force using the CPU.Note: The model will train, but the GPU utilization will be poor and the training might take longer than on CPU.
+  warnings.warn(
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+Oracle reward True
+
+============= Initialized Observation Utils with Obs Spec =============
+
+using obs modality: low_dim with keys: ['all']
+using obs modality: rgb with keys: []
+using obs modality: depth with keys: []
+using obs modality: scan with keys: []
+ENV made in 882.0716135120019 s
+Using cuda device
+Logging to /coc/flash8/atian31/repos/ReKep/log_dir/20250207-034831/run_1
+Eval num_timesteps=10000, episode_reward=10.38 +/- 5.44
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 10.4     |
+| time/              |          |
+|    total_timesteps | 10000    |
+---------------------------------
+New best mean reward!
+Eval num_timesteps=20000, episode_reward=13.72 +/- 1.53
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 13.7     |
+| time/              |          |
+|    total_timesteps | 20000    |
+---------------------------------
+New best mean reward!
+------------------------------
+| time/              |       |
+|    fps             | 9     |
+|    iterations      | 1     |
+|    time_elapsed    | 2101  |
+|    total_timesteps | 20480 |
+------------------------------
+Eval num_timesteps=30000, episode_reward=5.78 +/- 0.89
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 5.78         |
+| time/                   |              |
+|    total_timesteps      | 30000        |
+| train/                  |              |
+|    approx_kl            | 0.0070130406 |
+|    clip_fraction        | 0.0647       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11.3        |
+|    explained_variance   | 0.609        |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.0149      |
+|    n_updates            | 10           |
+|    policy_gradient_loss | -0.00493     |
+|    std                  | 0.997        |
+|    value_loss           | 0.000198     |
+------------------------------------------
+Eval num_timesteps=40000, episode_reward=5.86 +/- 0.08
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 5.86     |
+| time/              |          |
+|    total_timesteps | 40000    |
+---------------------------------
+------------------------------
+| time/              |       |
+|    fps             | 10    |
+|    iterations      | 2     |
+|    time_elapsed    | 3788  |
+|    total_timesteps | 40960 |
+------------------------------
+Eval num_timesteps=50000, episode_reward=8.20 +/- 2.60
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 8.2         |
+| time/                   |             |
+|    total_timesteps      | 50000       |
+| train/                  |             |
+|    approx_kl            | 0.007871112 |
+|    clip_fraction        | 0.0773      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | 0.772       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00863    |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.00432    |
+|    std                  | 0.995       |
+|    value_loss           | 9.95e-05    |
+-----------------------------------------
+Eval num_timesteps=60000, episode_reward=6.20 +/- 0.42
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 6.2      |
+| time/              |          |
+|    total_timesteps | 60000    |
+---------------------------------
+------------------------------
+| time/              |       |
+|    fps             | 11    |
+|    iterations      | 3     |
+|    time_elapsed    | 5451  |
+|    total_timesteps | 61440 |
+------------------------------
+Eval num_timesteps=70000, episode_reward=25.73 +/- 4.16
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 25.7         |
+| time/                   |              |
+|    total_timesteps      | 70000        |
+| train/                  |              |
+|    approx_kl            | 0.0076276967 |
+|    clip_fraction        | 0.0789       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11.2        |
+|    explained_variance   | 0.848        |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.0277      |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.00427     |
+|    std                  | 0.986        |
+|    value_loss           | 8.59e-05     |
+------------------------------------------
+New best mean reward!
+Eval num_timesteps=80000, episode_reward=22.53 +/- 3.08
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 22.5     |
+| time/              |          |
+|    total_timesteps | 80000    |
+---------------------------------
+------------------------------
+| time/              |       |
+|    fps             | 11    |
+|    iterations      | 4     |
+|    time_elapsed    | 7060  |
+|    total_timesteps | 81920 |
+------------------------------
+Eval num_timesteps=90000, episode_reward=9.83 +/- 0.92
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 9.83        |
+| time/                   |             |
+|    total_timesteps      | 90000       |
+| train/                  |             |
+|    approx_kl            | 0.007209736 |
+|    clip_fraction        | 0.0801      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.2       |
+|    explained_variance   | 0.818       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0017     |
+|    n_updates            | 40          |
+|    policy_gradient_loss | -0.00295    |
+|    std                  | 0.978       |
+|    value_loss           | 2.98e-05    |
+-----------------------------------------
+Eval num_timesteps=100000, episode_reward=10.26 +/- 0.93
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 10.3     |
+| time/              |          |
+|    total_timesteps | 100000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 5      |
+|    time_elapsed    | 8692   |
+|    total_timesteps | 102400 |
+-------------------------------
+Eval num_timesteps=110000, episode_reward=12.60 +/- 0.97
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 12.6        |
+| time/                   |             |
+|    total_timesteps      | 110000      |
+| train/                  |             |
+|    approx_kl            | 0.008399269 |
+|    clip_fraction        | 0.0929      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.1       |
+|    explained_variance   | 0.777       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00773    |
+|    n_updates            | 50          |
+|    policy_gradient_loss | -0.00508    |
+|    std                  | 0.976       |
+|    value_loss           | 2.03e-05    |
+-----------------------------------------
+Eval num_timesteps=120000, episode_reward=15.42 +/- 2.01
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 15.4     |
+| time/              |          |
+|    total_timesteps | 120000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 6      |
+|    time_elapsed    | 10634  |
+|    total_timesteps | 122880 |
+-------------------------------
+Eval num_timesteps=130000, episode_reward=6.84 +/- 3.45
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 6.84        |
+| time/                   |             |
+|    total_timesteps      | 130000      |
+| train/                  |             |
+|    approx_kl            | 0.008301189 |
+|    clip_fraction        | 0.0929      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.1       |
+|    explained_variance   | 0.657       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00086    |
+|    n_updates            | 60          |
+|    policy_gradient_loss | -0.00431    |
+|    std                  | 0.973       |
+|    value_loss           | 2.13e-05    |
+-----------------------------------------
+Eval num_timesteps=140000, episode_reward=7.10 +/- 1.83
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 7.1      |
+| time/              |          |
+|    total_timesteps | 140000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 7      |
+|    time_elapsed    | 12228  |
+|    total_timesteps | 143360 |
+-------------------------------
+Eval num_timesteps=150000, episode_reward=9.16 +/- 2.42
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 9.16        |
+| time/                   |             |
+|    total_timesteps      | 150000      |
+| train/                  |             |
+|    approx_kl            | 0.007522732 |
+|    clip_fraction        | 0.0877      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.1       |
+|    explained_variance   | 0.722       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0234     |
+|    n_updates            | 70          |
+|    policy_gradient_loss | -0.00259    |
+|    std                  | 0.967       |
+|    value_loss           | 1.4e-05     |
+-----------------------------------------
+Eval num_timesteps=160000, episode_reward=6.80 +/- 1.26
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 6.8      |
+| time/              |          |
+|    total_timesteps | 160000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 8      |
+|    time_elapsed    | 14016  |
+|    total_timesteps | 163840 |
+-------------------------------
+Eval num_timesteps=170000, episode_reward=9.69 +/- 0.76
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 9.69        |
+| time/                   |             |
+|    total_timesteps      | 170000      |
+| train/                  |             |
+|    approx_kl            | 0.007938231 |
+|    clip_fraction        | 0.086       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11         |
+|    explained_variance   | 0.707       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00407    |
+|    n_updates            | 80          |
+|    policy_gradient_loss | -0.00444    |
+|    std                  | 0.96        |
+|    value_loss           | 1.14e-05    |
+-----------------------------------------
+Eval num_timesteps=180000, episode_reward=7.83 +/- 1.93
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 7.83     |
+| time/              |          |
+|    total_timesteps | 180000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 9      |
+|    time_elapsed    | 15632  |
+|    total_timesteps | 184320 |
+-------------------------------
+Eval num_timesteps=190000, episode_reward=11.77 +/- 0.15
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 11.8        |
+| time/                   |             |
+|    total_timesteps      | 190000      |
+| train/                  |             |
+|    approx_kl            | 0.007295092 |
+|    clip_fraction        | 0.0891      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11         |
+|    explained_variance   | 0.592       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0116     |
+|    n_updates            | 90          |
+|    policy_gradient_loss | -0.00347    |
+|    std                  | 0.956       |
+|    value_loss           | 8.11e-06    |
+-----------------------------------------
+Eval num_timesteps=200000, episode_reward=8.72 +/- 4.17
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 8.72     |
+| time/              |          |
+|    total_timesteps | 200000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 10     |
+|    time_elapsed    | 17257  |
+|    total_timesteps | 204800 |
+-------------------------------
+Eval num_timesteps=210000, episode_reward=8.08 +/- 0.39
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 8.08         |
+| time/                   |              |
+|    total_timesteps      | 210000       |
+| train/                  |              |
+|    approx_kl            | 0.0073469067 |
+|    clip_fraction        | 0.0815       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11          |
+|    explained_variance   | 0.529        |
+|    learning_rate        | 0.0003       |
+|    loss                 | 0.0187       |
+|    n_updates            | 100          |
+|    policy_gradient_loss | -0.00313     |
+|    std                  | 0.953        |
+|    value_loss           | 8.49e-06     |
+------------------------------------------
+Eval num_timesteps=220000, episode_reward=10.64 +/- 1.53
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 10.6     |
+| time/              |          |
+|    total_timesteps | 220000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 11     |
+|    time_elapsed    | 18922  |
+|    total_timesteps | 225280 |
+-------------------------------
+Eval num_timesteps=230000, episode_reward=3.88 +/- 1.33
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 3.88         |
+| time/                   |              |
+|    total_timesteps      | 230000       |
+| train/                  |              |
+|    approx_kl            | 0.0073435353 |
+|    clip_fraction        | 0.0797       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11          |
+|    explained_variance   | 0.84         |
+|    learning_rate        | 0.0003       |
+|    loss                 | 0.0179       |
+|    n_updates            | 110          |
+|    policy_gradient_loss | -0.00222     |
+|    std                  | 0.955        |
+|    value_loss           | 6.56e-06     |
+------------------------------------------
+Eval num_timesteps=240000, episode_reward=5.29 +/- 2.23
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 5.29     |
+| time/              |          |
+|    total_timesteps | 240000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 12     |
+|    time_elapsed    | 20563  |
+|    total_timesteps | 245760 |
+-------------------------------
+Eval num_timesteps=250000, episode_reward=5.40 +/- 2.74
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 5.4          |
+| time/                   |              |
+|    total_timesteps      | 250000       |
+| train/                  |              |
+|    approx_kl            | 0.0071182153 |
+|    clip_fraction        | 0.0779       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11          |
+|    explained_variance   | 0.816        |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.0113      |
+|    n_updates            | 120          |
+|    policy_gradient_loss | -0.00216     |
+|    std                  | 0.963        |
+|    value_loss           | 4e-06        |
+------------------------------------------
+Eval num_timesteps=260000, episode_reward=7.18 +/- 3.20
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 7.18     |
+| time/              |          |
+|    total_timesteps | 260000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 13     |
+|    time_elapsed    | 22243  |
+|    total_timesteps | 266240 |
+-------------------------------
+Eval num_timesteps=270000, episode_reward=4.19 +/- 1.38
+Episode length: 41.00 +/- 0.00
+----------------------------------------
+| eval/                   |            |
+|    mean_ep_length       | 41         |
+|    mean_reward          | 4.19       |
+| time/                   |            |
+|    total_timesteps      | 270000     |
+| train/                  |            |
+|    approx_kl            | 0.00812961 |
+|    clip_fraction        | 0.0801     |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -11.1      |
+|    explained_variance   | 0.863      |
+|    learning_rate        | 0.0003     |
+|    loss                 | 0.0553     |
+|    n_updates            | 130        |
+|    policy_gradient_loss | -0.00291   |
+|    std                  | 0.976      |
+|    value_loss           | 2.56e-06   |
+----------------------------------------
+Eval num_timesteps=280000, episode_reward=10.62 +/- 9.43
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 10.6     |
+| time/              |          |
+|    total_timesteps | 280000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 14     |
+|    time_elapsed    | 23916  |
+|    total_timesteps | 286720 |
+-------------------------------
+Eval num_timesteps=290000, episode_reward=5.67 +/- 0.71
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 5.67        |
+| time/                   |             |
+|    total_timesteps      | 290000      |
+| train/                  |             |
+|    approx_kl            | 0.007857053 |
+|    clip_fraction        | 0.0789      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.2       |
+|    explained_variance   | 0.873       |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0108      |
+|    n_updates            | 140         |
+|    policy_gradient_loss | -0.00411    |
+|    std                  | 0.983       |
+|    value_loss           | 1.71e-06    |
+-----------------------------------------
+Eval num_timesteps=300000, episode_reward=4.26 +/- 0.70
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 4.26     |
+| time/              |          |
+|    total_timesteps | 300000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 15     |
+|    time_elapsed    | 25723  |
+|    total_timesteps | 307200 |
+-------------------------------
+Eval num_timesteps=310000, episode_reward=12.66 +/- 8.06
+Episode length: 41.00 +/- 0.00
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 41           |
+|    mean_reward          | 12.7         |
+| time/                   |              |
+|    total_timesteps      | 310000       |
+| train/                  |              |
+|    approx_kl            | 0.0063500716 |
+|    clip_fraction        | 0.0682       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11.3        |
+|    explained_variance   | 0.831        |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.00153     |
+|    n_updates            | 150          |
+|    policy_gradient_loss | -0.00325     |
+|    std                  | 0.996        |
+|    value_loss           | 3.67e-06     |
+------------------------------------------
+Eval num_timesteps=320000, episode_reward=4.82 +/- 1.87
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 4.82     |
+| time/              |          |
+|    total_timesteps | 320000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 16     |
+|    time_elapsed    | 27493  |
+|    total_timesteps | 327680 |
+-------------------------------
+Eval num_timesteps=330000, episode_reward=8.58 +/- 5.74
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 8.58        |
+| time/                   |             |
+|    total_timesteps      | 330000      |
+| train/                  |             |
+|    approx_kl            | 0.006942422 |
+|    clip_fraction        | 0.0774      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.4       |
+|    explained_variance   | 0.796       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00308    |
+|    n_updates            | 160         |
+|    policy_gradient_loss | -0.00417    |
+|    std                  | 1           |
+|    value_loss           | 2.13e-06    |
+-----------------------------------------
+Eval num_timesteps=340000, episode_reward=10.63 +/- 7.94
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 10.6     |
+| time/              |          |
+|    total_timesteps | 340000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 17     |
+|    time_elapsed    | 29219  |
+|    total_timesteps | 348160 |
+-------------------------------
+Eval num_timesteps=350000, episode_reward=8.45 +/- 6.31
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 8.45        |
+| time/                   |             |
+|    total_timesteps      | 350000      |
+| train/                  |             |
+|    approx_kl            | 0.007132566 |
+|    clip_fraction        | 0.0862      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | 0.816       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0196     |
+|    n_updates            | 170         |
+|    policy_gradient_loss | -0.00271    |
+|    std                  | 0.996       |
+|    value_loss           | 2.68e-06    |
+-----------------------------------------
+Eval num_timesteps=360000, episode_reward=11.98 +/- 4.41
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 12       |
+| time/              |          |
+|    total_timesteps | 360000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 18     |
+|    time_elapsed    | 31019  |
+|    total_timesteps | 368640 |
+-------------------------------
+Eval num_timesteps=370000, episode_reward=2.63 +/- 0.98
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 2.63        |
+| time/                   |             |
+|    total_timesteps      | 370000      |
+| train/                  |             |
+|    approx_kl            | 0.007672244 |
+|    clip_fraction        | 0.0827      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | 0.271       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00327    |
+|    n_updates            | 180         |
+|    policy_gradient_loss | -0.00297    |
+|    std                  | 0.993       |
+|    value_loss           | 3.19e-06    |
+-----------------------------------------
+Eval num_timesteps=380000, episode_reward=4.77 +/- 1.69
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 4.77     |
+| time/              |          |
+|    total_timesteps | 380000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 19     |
+|    time_elapsed    | 32665  |
+|    total_timesteps | 389120 |
+-------------------------------
+DONE!
+Eval num_timesteps=390000, episode_reward=15.76 +/- 6.67
+Episode length: 29.67 +/- 16.03
+------------------------------------------
+| eval/                   |              |
+|    mean_ep_length       | 29.7         |
+|    mean_reward          | 15.8         |
+| time/                   |              |
+|    total_timesteps      | 390000       |
+| train/                  |              |
+|    approx_kl            | 0.0074920207 |
+|    clip_fraction        | 0.0873       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -11.3        |
+|    explained_variance   | -3.26        |
+|    learning_rate        | 0.0003       |
+|    loss                 | 0.0103       |
+|    n_updates            | 190          |
+|    policy_gradient_loss | -0.00343     |
+|    std                  | 0.993        |
+|    value_loss           | 2.73e-06     |
+------------------------------------------
+Eval num_timesteps=400000, episode_reward=17.50 +/- 10.95
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 17.5     |
+| time/              |          |
+|    total_timesteps | 400000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 20     |
+|    time_elapsed    | 34384  |
+|    total_timesteps | 409600 |
+-------------------------------
+Eval num_timesteps=410000, episode_reward=22.04 +/- 11.64
+Episode length: 41.00 +/- 0.00
+----------------------------------------
+| eval/                   |            |
+|    mean_ep_length       | 41         |
+|    mean_reward          | 22         |
+| time/                   |            |
+|    total_timesteps      | 410000     |
+| train/                  |            |
+|    approx_kl            | 0.00813208 |
+|    clip_fraction        | 0.0971     |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -11.3      |
+|    explained_variance   | 0.179      |
+|    learning_rate        | 0.0003     |
+|    loss                 | -0.0297    |
+|    n_updates            | 200        |
+|    policy_gradient_loss | -0.00374   |
+|    std                  | 0.992      |
+|    value_loss           | 2.73e-06   |
+----------------------------------------
+Eval num_timesteps=420000, episode_reward=13.83 +/- 8.90
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 13.8     |
+| time/              |          |
+|    total_timesteps | 420000   |
+---------------------------------
+Eval num_timesteps=430000, episode_reward=20.04 +/- 10.73
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 20       |
+| time/              |          |
+|    total_timesteps | 430000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 21     |
+|    time_elapsed    | 36297  |
+|    total_timesteps | 430080 |
+-------------------------------
+Eval num_timesteps=440000, episode_reward=11.34 +/- 10.33
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 11.3        |
+| time/                   |             |
+|    total_timesteps      | 440000      |
+| train/                  |             |
+|    approx_kl            | 0.008474281 |
+|    clip_fraction        | 0.0943      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | -6.54       |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0701      |
+|    n_updates            | 210         |
+|    policy_gradient_loss | -0.00218    |
+|    std                  | 0.992       |
+|    value_loss           | 7.52e-06    |
+-----------------------------------------
+Eval num_timesteps=450000, episode_reward=10.99 +/- 10.79
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 11       |
+| time/              |          |
+|    total_timesteps | 450000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 22     |
+|    time_elapsed    | 38051  |
+|    total_timesteps | 450560 |
+-------------------------------
+Eval num_timesteps=460000, episode_reward=15.61 +/- 3.82
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 15.6        |
+| time/                   |             |
+|    total_timesteps      | 460000      |
+| train/                  |             |
+|    approx_kl            | 0.008108147 |
+|    clip_fraction        | 0.0929      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | 0.108       |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.042       |
+|    n_updates            | 220         |
+|    policy_gradient_loss | -0.00351    |
+|    std                  | 0.992       |
+|    value_loss           | 1.61e-06    |
+-----------------------------------------
+Eval num_timesteps=470000, episode_reward=17.05 +/- 8.16
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 17       |
+| time/              |          |
+|    total_timesteps | 470000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 23     |
+|    time_elapsed    | 39726  |
+|    total_timesteps | 471040 |
+-------------------------------
+Eval num_timesteps=480000, episode_reward=20.53 +/- 12.24
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 20.5        |
+| time/                   |             |
+|    total_timesteps      | 480000      |
+| train/                  |             |
+|    approx_kl            | 0.009009531 |
+|    clip_fraction        | 0.109       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.2       |
+|    explained_variance   | -0.695      |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0177      |
+|    n_updates            | 230         |
+|    policy_gradient_loss | -0.00261    |
+|    std                  | 0.984       |
+|    value_loss           | 1.44e-06    |
+-----------------------------------------
+Eval num_timesteps=490000, episode_reward=16.77 +/- 9.63
+Episode length: 41.00 +/- 0.00
+---------------------------------
+| eval/              |          |
+|    mean_ep_length  | 41       |
+|    mean_reward     | 16.8     |
+| time/              |          |
+|    total_timesteps | 490000   |
+---------------------------------
+-------------------------------
+| time/              |        |
+|    fps             | 11     |
+|    iterations      | 24     |
+|    time_elapsed    | 41559  |
+|    total_timesteps | 491520 |
+-------------------------------
+Eval num_timesteps=500000, episode_reward=20.88 +/- 3.65
+Episode length: 41.00 +/- 0.00
+-----------------------------------------
+| eval/                   |             |
+|    mean_ep_length       | 41          |
+|    mean_reward          | 20.9        |
+| time/                   |             |
+|    total_timesteps      | 500000      |
+| train/                  |             |
+|    approx_kl            | 0.009429516 |
+|    clip_fraction        | 0.0939      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -11.3       |
+|    explained_variance   | -0.403      |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0113      |
+|    n_updates            | 240         |
+|    policy_gradient_loss | -0.00417    |
+|    std                  | 0.989       |
+|    value_loss           | 1.44e-06    |
+-----------------------------------------

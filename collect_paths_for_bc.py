@@ -28,7 +28,7 @@ if __name__ == "__main__":
     instruction = task['instruction']
     global_config = get_config(config_path="./configs/config.yaml")
     config = global_config['env']
-     
+    
     config['scene']['scene_file'] = scene_file
 
     save_dir = os.path.join(os.path.dirname(__file__), 'data')

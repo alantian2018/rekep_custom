@@ -511,7 +511,7 @@
                 "joints": {},
                 "non_kin": {}
             }
-         }
+        }
     },
     "objects_info": {
         "init_info": {
@@ -884,6 +884,7 @@
                         1.3
                     ]
                 }
+            
             }
         }
     }

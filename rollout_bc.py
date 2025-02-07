@@ -18,7 +18,6 @@ import time
 import os
 import imageio
 from environment import *
-from rollout_based_on_dataset import *
 from tqdm import tqdm
 from utils import (
     bcolors,
@@ -29,6 +28,7 @@ from utils import (
     get_callable_grasping_cost_fn,
     print_opt_debug_dict,
 )
+from rollout_based_on_dataset import add_independent_points_to_ply
 import matplotlib.pyplot as plt
 
 
@@ -40,6 +40,7 @@ def rollout(policy, environment, video_buffer,n, ee_points,ee_distance_data):
     obs = environment.reset()
     key = f'demo_{n+1}'
     ee_distance_data[key] = []
+    rewards=  []
     for i in tqdm(range (80), desc=f'Rollout: {n+1}'):
         action = policy({'all' : obs})
         obs, r, done, _, __ = env.step(action)
@@ -50,6 +51,7 @@ def rollout(policy, environment, video_buffer,n, ee_points,ee_distance_data):
         bbox = environment.get_aabb('pen_1')
         distance = calculate_bbox_to_point(bbox, environment.get_ee_pos())
         ee_distance_data[key].append(distance)
+        rewards.append(r)
 
         if video_buffer is not None:
             cam_obs = env.get_cam_obs()
@@ -60,7 +62,7 @@ def rollout(policy, environment, video_buffer,n, ee_points,ee_distance_data):
             print('Done, breaking early....')
             break
     ee_distance_data[key] = np.array(ee_distance_data[key])
-    return ee_distance_data[key]
+    return ee_distance_data[key], rewards
      
 
  
@@ -80,7 +82,7 @@ if __name__ == '__main__':
     video_path = os.path.join(dir_path, 'videos/rollout.mp4')
     dist_path = os.path.join(dir_path, 'distances.png')
 
-    video_buffer = None #imageio.get_writer(video_path, fps=20)
+    video_buffer = imageio.get_writer(video_path, fps=20)
      
     task_list = {
         'pen': {
@@ -101,6 +103,9 @@ if __name__ == '__main__':
 
     env = CustomOGEnv(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim']), config,
                                      randomize=True)
+
+    env.set_rekep_program_dir('/nethome/atian31/flash8/repos/ReKep/vlm_query/2025-01-19_02-06-17_pick_up_the_white_pen_in_the_middle._')
+    env.set_reward_function_for_stage(1)
     mesh = env.get_mesh('pen_1')
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -109,18 +114,18 @@ if __name__ == '__main__':
     
     ee_points = []
     ee_distance_data=dict()
-    for i in range(200):
-        dist = rollout(policy, env, video_buffer, i, ee_points, ee_distance_data)
+    for i in range(5):
+        dist , r = rollout(policy, env, video_buffer, i, ee_points, ee_distance_data)
         dist *= 100
         x = range(len(dist)) 
         print(f'MINIMUM DISTANCE: {min(dist)} cm')
-        plt.plot(x, dist, label=f"Rollout {i + 1}")
+        plt.plot(x, r, label=f"Rollout {i + 1}")
 
     plt.xlabel('step')
-    plt.ylabel('distance to pen (cm)')
+    plt.ylabel('reward')
     plt.savefig(dist_path)
 
-
+    
     path = os.path.join(dir_path,"trajectories/")
     os.makedirs(path, exist_ok=True)
 
@@ -131,8 +136,8 @@ if __name__ == '__main__':
     ee_save_path = os.path.join(dir_path, 'ee_raw.pkl')
     torch.save(ee_data, ee_save_path)
     print(f'Saved ee data to {ee_save_path}')
+    
 
-    breakpoint()
     if video_buffer is not None:
         video_buffer.close()
         print(f"video written to {video_path}")

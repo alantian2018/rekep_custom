@@ -17,6 +17,7 @@ from robomimic.utils.log_utils import PrintLogger, DataLogger, flush_warnings
 import time
 import os
 import psutil
+import h5py
 
 def train_offline(dataset_path, config_path, algo_name="bc"):
     """
@@ -35,6 +36,14 @@ def train_offline(dataset_path, config_path, algo_name="bc"):
         config.train.data = dataset_path
 
     log_dir, ckpt_dir, video_dir = TrainUtils.get_exp_dir(config)
+    f= h5py.File(config.train.data)
+    with open (
+        os.path.join(
+            os.path.dirname(log_dir),
+            'rekep_program_dir.txt'
+        ), 'w') as wf:  
+        wf.write(f.attrs['rekep_program_dir'])
+
     data_logger = DataLogger(
         log_dir,
         config,
@@ -50,6 +59,7 @@ def train_offline(dataset_path, config_path, algo_name="bc"):
         all_obs_keys=None,
         verbose=True
     )
+
     
     trainset, validset = TrainUtils.load_data_for_training(
         config, obs_keys=shape_meta["all_obs_keys"])

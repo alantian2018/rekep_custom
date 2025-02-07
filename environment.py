@@ -3,8 +3,11 @@ import numpy as np
 import os
 import datetime
 import transform_utils as T
- 
+import copy
+import gymnasium as gym
+import robomimic.utils.file_utils as FileUtils
 import trimesh
+import json
 import open3d as o3d
 import imageio
 from collections import OrderedDict
@@ -15,6 +18,7 @@ from omnigibson.robots.fetch import Fetch
 from omnigibson.controllers import IsGraspingState
 from og_utils import OGCamera
 from robomimic.utils.tensor_utils import flatten_nested_dict_list
+from collections import OrderedDict
 from utils import (
     bcolors,
     get_clock_time,
@@ -22,14 +26,28 @@ from utils import (
     angle_between_quats,
     get_linear_interpolation_steps,
     linear_interpolate_poses,
-    exec_safe
+    exec_safe,
+    get_callable_grasping_cost_fn,
+    load_functions_from_txt
 )
 from omnigibson.robots.manipulation_robot import ManipulationRobot
 from omnigibson.controllers.controller_base import ControlType, BaseController
 import torch
 # Don't use GPU dynamics and use flatcache for performance boost
-gm.USE_GPU_DYNAMICS = True
-gm.ENABLE_FLATCACHE = False
+gm.USE_GPU_DYNAMICS = False
+gm.ENABLE_FLATCACHE = True
+gm.ENABLE_OBJECT_STATES = True
+gm.ENABLE_TRANSITION_RULES = False
+def calculate_bbox_to_point(bbox, p):
+    min_x, max_x = min(bbox[0][0],bbox[1][0]), max(bbox[0][0],bbox[1][0])
+    min_y, max_y = min(bbox[0][1],bbox[1][1]), max(bbox[0][1],bbox[1][1])
+    min_z, max_z = min(bbox[0][2],bbox[1][2]), max(bbox[0][2],bbox[1][2]) 
+    
+    dx = max(min_x - p[0], 0, p[0] - max_x)
+    dy = max(min_y - p[1], 0, p[1] - max_y)
+    dz = max(min_z - p[2], 0, p[2] - max_z)
+
+    return (dx*dx + dy*dy + dz*dz)**.5
 
 def preprocess_obs(d):
     # This function recursively flattens a nested dictionary into a list of tensors
@@ -123,16 +141,17 @@ class Trajectory:
         self.is_grasping_releasing = []
     
 
-class CustomOGEnv(og.Environment):
 
+class CustomOGEnv(og.Environment):
     """
     Custom OmniGibson env that supports
       (1) custom reward functions
       (2) keypoint tracking
     """
-    def __init__(self, args, config, randomize=False, low_dim =True):
+    def __init__(self, configs, config, in_vec_env=False, randomize=False, low_dim =True, use_oracle_reward=False):
+        
         self.randomize = None
-        self.low_dim=None
+        self.low_dim=low_dim
         self.objs = OrderedDict(
             {'pen_1': {'randomize' : randomize,
                        'obs' : True,
@@ -141,79 +160,156 @@ class CustomOGEnv(og.Environment):
              
              'table_1' : { 'randomize' : False, 'obs':False}})
         self.robot = None
-        super().__init__(args)
+      
+        self.use_oracle_reward=use_oracle_reward
+        print(f'Oracle reward {self.use_oracle_reward}')
+        super().__init__(configs, in_vec_env)
+
         self.robot = self.robots[0]
         self.randomize=randomize
-        
-
-        # Update the initial state of the scene
-        self.scene.update_initial_state()
-        
-        # Perform initial simulation steps
+        self.in_vec_env = in_vec_env
+        self.pen = self.scene.object_registry("name", 'pen_1')
         for _ in range(10):
             og.sim.step()
         self.reward_functions = None
-        self.step_counter = 0
-        
-        
-        self.low_dim=True
-
-        self.action_space = self.action_space['Fetch']
+        self.step_counter = 0        
+        self.low_dim=low_dim
         self.config = config
-        self.init_pos = None
-        self._initialize_cameras(self.config['camera'])
+        self.action_dim= 8
+        self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.action_dim,), dtype=np.float32)
         
+        if not in_vec_env:
+            self.scene.update_initial_state()
+            obs_size = self.get_low_dim_obs().shape
+            self.observation_size = obs_size
+                        # Update the initial state of the scene
+            self.init_pos = None
+            self._initialize_cameras(self.config['camera'])
+        
+
         
     
+    def post_play_load(self):
+        super().post_play_load()
+        if self.in_vec_env: 
+            self.scene.update_initial_state()
+            
+            if self.low_dim:
+                obs_size = self.get_low_dim_obs().shape
+                self.observation_size = obs_size
+                obs_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=obs_size, dtype=np.float32)
+                self.observation_space = obs_space
+
+            else:
+                raise NotImplementedError()
+
+            # Update the initial state of the scene
+            self.action_dim= 8
+            self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.action_dim,), dtype=np.float32)
+            self.init_pos = None
+            self._initialize_cameras(self.config['camera'])
+            
+
        
         
-    def set_reward_functions(self,path_to_VLM_query):
-        list_of_reward_funcs = [i for i in os.listdir(path_to_VLM_query) 
-                                if i.startswith('stage') and i.endswith('_subgoal_constraints.txt')]
-
-        print(f'Loaded {len(list_of_reward_funcs)} reward functions')
-        constraints = []
-        for i in range (len(list_of_reward_funcs)):
+    def set_rekep_program_dir(self, rekep_program_dir):
+        with open(os.path.join(rekep_program_dir, 'metadata.json'), 'r') as f:
             
-            with open (os.path.join(path_to_VLM_query, f'stage{i+1}_subgoal_constraints.txt')) as f:
-                function_text = f.read()
-            gvars_dict = {'np': np}
-            lvars_dict = dict()
-            exec_safe(function_text, gvars=gvars_dict, lvars=lvars_dict)
-            constraints += list(lvars_dict.values())
-        self.reward_functions = constraints
+            self.program_info = json.load(f)
+        self.constraint_fns = dict()
+        for stage in range(1, self.program_info['num_stages'] + 1):  # stage starts with 1
+            stage_dict = dict()
+            for constraint_type in ['subgoal', 'path']:
+                load_path = os.path.join(rekep_program_dir, f'stage{stage}_{constraint_type}_constraints.txt')
+                get_grasping_cost_fn = get_callable_grasping_cost_fn(self)  # special grasping function for VLM to call
+                stage_dict[constraint_type] = load_functions_from_txt(load_path, get_grasping_cost_fn) if os.path.exists(load_path) else []
+            self.constraint_fns[stage] = stage_dict
 
-    def get_dense_reward_constraint(self,EE, keypoints):
-        cost = 0 
-        try:
-            EE = EE.cpu()
-        except:
-            pass
-        for func in self.reward_functions:
-            cost -= func(EE, keypoints)
-        return cost
+        self.register_keypoints(self.program_info['init_keypoint_positions'])
+
+    def set_reward_function_for_stage(self, stage):
+        assert hasattr(self,'constraint_fns'), 'Make sure to set rekep program dir!'
+        self.stage = stage
+        self.substage_constraints = self.constraint_fns[stage]
+        self.grasp_point = self.program_info['grasp_keypoints'][self.stage - 1] 
+        self.release_point = self.program_info['release_keypoints'][self.stage - 1] 
+        
+
+    def oracle_reward(self):
+        rew = 0
+        if self.get_done():
+            rew += 2.25
+
+       
+
+        reaching_reward = 1 - np.tanh(10.0 * dist)
+        return rew +reaching_reward
+    
+    def get_reward(self):
+        if self.use_oracle_reward:
+            return self.oracle_reward() 
+
+        assert self.substage_constraints is not None
+        # negative subgoal constraints
+        # cannot violate path constraints, so make that very negative
+        ee_pos = self.get_ee_pos()
+        keypoint_pos = self.get_keypoint_positions()
+
+        reward = 0
+
+        for fn in self.substage_constraints['subgoal']:
+            reward -= 10*fn(ee_pos, keypoint_pos) 
+        for fn in self.substage_constraints['path']:
+            reward -= 20*fn(ee_pos, keypoint_pos)  # - constraint violations
+
+        if self.grasp_point != -1 and self.is_grasping(
+                                      self.get_object_by_keypoint(self.grasp_point)):
+            reward += 2
+        
+        if self.release_point != -1 and not self.is_grasping(
+                                       self.get_object_by_keypoint(self.release_point)):
+            reward += 2
+
+        return reward
+        
 
     def step(self, action):
-        if (action.size != 12):
+        
+        if  not (action.size == 12 or action.size==11):
             a = np.zeros(12)
             a[4:]=action
             action = a
 
         next_o, reward, terminated, truncated, info = super().step(action)
-       
-    #    if self.reward_functions is not None:
-    #        reward = self.get_dense_reward_constraint(np.asarray(self.robot.get_eef_position()), self.get_keypoint_positions())
+        
+        reward = self.get_reward()
 
         if self.low_dim:
             next_o  = self.get_low_dim_obs()
-        
         terminated = self.get_done()
+        
         if terminated:
             print('DONE!')
+        self.step_counter +=1
+
+        if (self.step_counter > 40):
+            truncated = not terminated
+            terimnated=True
         return next_o,reward,terminated,truncated, dict()
 
-    def reset(self, objs=None):
-        super().reset()
+    def render(self):
+        cam_obs = self.get_cam_obs()
+        rgb = cam_obs[1]['rgb']
+        return rgb
+
+    def reset(self, seed=None, objs=None):
+        self.step_couter=0
+        if seed is not None:
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+
+            
+        super().reset(get_obs=False)
         self.init_pos = dict()
         if self.randomize and objs is None:
            # print('randomizing')
@@ -233,7 +329,6 @@ class CustomOGEnv(og.Environment):
                         position = objs[obj][:3],
                         orientation = objs[obj][3:]
                     ) 
-       
 
         for i in range (5):
             og.sim.step()
@@ -242,8 +337,7 @@ class CustomOGEnv(og.Environment):
             return self.get_low_dim_obs()
 
     def get_done(self):
-
-        return self.is_grasping('pen_1')
+        return self.is_grasping(self.pen)
 
     def get_aabb(self, obj_name):
         obj = self.scene.object_registry("name", obj_name)
@@ -292,8 +386,6 @@ class CustomOGEnv(og.Environment):
                 trimesh_objects.append(trimesh_object)
                 
         scene_mesh = trimesh.util.concatenate(trimesh_objects)
- 
-
         
         return scene_mesh
 
@@ -364,6 +456,7 @@ class CustomOGEnv(og.Environment):
             keypoint = np.dot(curr_pose, np.append(keypoint_centered, 1))[:3]
             keypoint_positions.append(keypoint)
         return np.array(keypoint_positions)
+
     def get_low_dim_obs(self):
         
         proprio = torch.cat(
@@ -444,6 +537,10 @@ class CustomOGEnv(og.Environment):
         dof_idx = np.concatenate([self.robot.trunk_control_idx, self.robot.arm_control_idx[arm]])
         arm_joint_pos = self.robot.get_joint_positions()[dof_idx]
         return arm_joint_pos
+
+    def shutdown(self):
+        og.shutdown()
+
 
 
 
@@ -654,7 +751,6 @@ class ReKepOGEnv:
         Exposed interface: 1.0 for closed, -1.0 for open, 0.0 for no change
         Internal OG interface: 1.0 for open, 0.0 for closed
         """
-         
 
         if self.last_og_gripper_action == 0.0:
             return
@@ -886,4 +982,70 @@ class ReKepOGEnv:
 
         if should_return:
             return (o, action[4:], reward, terminated, "", info, next_o)
-     
+
+
+
+class RLEnvWrapper(CustomOGEnv):
+    def __init__(self, args, config, in_vec_env=False, randomize=True, low_dim=True, bc_policy=None, threshold=10, use_oracle_reward=False): # threshold in cm
+        super().__init__(args, config, in_vec_env, randomize, low_dim, use_oracle_reward)
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.policy, ckpt_dict = FileUtils.policy_from_checkpoint(ckpt_path=bc_policy, device=device, verbose=False)
+        self.threshold = threshold
+
+    def reset(self, seed=None):
+        self.step_couter=0
+        obs = super().reset(seed=seed) 
+        step = 0
+      
+        if self.robot is not None:
+            while 100 * calculate_bbox_to_point(self.get_aabb('pen_1'), self.get_ee_pos()) > self.threshold and step < 80:
+                action = self.policy({'all' : obs})
+                obs, r, done, _, __ = self.step(action)
+                step += 1
+                 
+            self.step_counter=0
+            return self.get_low_dim_obs(), {}
+        self.step_counter=0
+    
+
+    def _post_step(self, action):
+        """Apply the post-sim-step part of an environment step, i.e. grab observations and return the step results."""
+        # Grab observations
+         
+        assert sum(action[:4])==0 and action.shape[0]==12
+
+        obs = self.get_low_dim_obs()
+
+        # Step the scene graph builder if necessary
+        if self._scene_graph_builder is not None:
+            self._scene_graph_builder.step(self.scene)
+
+        # Grab reward, done, and info, and populate with internal info
+        reward, done, info = self.task.step(self, action)
+        self._populate_info(info)
+        reward,done = self.get_reward(), self.get_done()
+        info["obs_info"] = 'low dim'
+
+        if done and self._automatic_reset:
+            # Add lost observation to our information dict, and reset
+            info["last_observation"] = obs
+            obs = self.reset()
+
+        # Hacky way to check for time limit info to split terminated and truncated
+        terminated = False
+        truncated = False
+        for tc, tc_data in info["done"]["termination_conditions"].items():
+            if tc_data["done"]:
+                if tc == "timeout":
+                    truncated = True
+                else:
+                    terminated = True
+        terminated=done
+        assert (terminated or truncated) == done, "Terminated and truncated must match done!"
+
+        # Increment step
+        self._current_step += 1
+         
+        return obs, reward, terminated, truncated, info
+
+    
