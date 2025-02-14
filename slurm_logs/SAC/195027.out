@@ -455,28 +455,36 @@ using obs modality: rgb with keys: []
 using obs modality: depth with keys: []
 using obs modality: scan with keys: []
 Module omni.replicator.core.ogn.python._impl.nodes.OgnSemanticSegmentation cc3f83a load on device 'cuda:0' took 3.32 ms
-Loading environments:   0%|          | 0/10 [00:00<?, ?it/s][INFO] [omnigibson.simulator] Imported scene 1.
+
+Loading environments:   0%|          | 0/10 [00:00<?, ?it/s][INFO] [omnigibson.simulator] Imported scene 1.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  10%|█         | 1/10 [00:11<01:39, 11.02s/it][INFO] [omnigibson.simulator] Imported scene 2.
+
+Loading environments:  10%|█         | 1/10 [00:11<01:39, 11.02s/it][INFO] [omnigibson.simulator] Imported scene 2.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  20%|██        | 2/10 [00:22<01:29, 11.17s/it][INFO] [omnigibson.simulator] Imported scene 3.
+
+Loading environments:  20%|██        | 2/10 [00:22<01:29, 11.17s/it][INFO] [omnigibson.simulator] Imported scene 3.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  30%|███       | 3/10 [00:34<01:21, 11.61s/it][INFO] [omnigibson.simulator] Imported scene 4.
+
+Loading environments:  30%|███       | 3/10 [00:34<01:21, 11.61s/it][INFO] [omnigibson.simulator] Imported scene 4.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  40%|████      | 4/10 [00:46<01:09, 11.66s/it][INFO] [omnigibson.simulator] Imported scene 5.
+
+Loading environments:  40%|████      | 4/10 [00:46<01:09, 11.66s/it][INFO] [omnigibson.simulator] Imported scene 5.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  50%|█████     | 5/10 [00:57<00:57, 11.48s/it][INFO] [omnigibson.simulator] Imported scene 6.
+
+Loading environments:  50%|█████     | 5/10 [00:57<00:57, 11.48s/it][INFO] [omnigibson.simulator] Imported scene 6.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  60%|██████    | 6/10 [01:10<00:48, 12.18s/it][INFO] [omnigibson.simulator] Imported scene 7.
+
+Loading environments:  60%|██████    | 6/10 [01:10<00:48, 12.18s/it][INFO] [omnigibson.simulator] Imported scene 7.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  70%|███████   | 7/10 [01:22<00:36, 12.08s/it][INFO] [omnigibson.simulator] Imported scene 8.
+
+Loading environments:  70%|███████   | 7/10 [01:22<00:36, 12.08s/it][INFO] [omnigibson.simulator] Imported scene 8.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 2025-02-07 07:39:38 [16,619ms] [Warning] [omni.kit.imgui_renderer.plugin] _createExtendCursor: No windowing.
@@ -531,13 +539,17 @@ Module omni.replicator.core.ogn.python._impl.nodes.OgnSemanticSegmentation cc3f8
 2025-02-07 07:41:25 [123,789ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 2025-02-07 07:41:34 [132,477ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
 2025-02-07 07:41:39 [137,500ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-2025-02-07 07:41:39 [137,500ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are posLoading environments:  80%|████████  | 8/10 [01:36<00:25, 12.61s/it][INFO] [omnigibson.simulator] Imported scene 9.
+2025-02-07 07:41:39 [137,500ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are pos
+Loading environments:  80%|████████  | 8/10 [01:36<00:25, 12.61s/it][INFO] [omnigibson.simulator] Imported scene 9.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments:  90%|█████████ | 9/10 [01:49<00:12, 12.62s/it][INFO] [omnigibson.simulator] Imported scene 10.
+
+Loading environments:  90%|█████████ | 9/10 [01:49<00:12, 12.62s/it][INFO] [omnigibson.simulator] Imported scene 10.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 [WARNING] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
-Loading environments: 100%|██████████| 10/10 [02:00<00:00, 12.38s/it]Loading environments: 100%|██████████| 10/10 [02:00<00:00, 12.09s/it]
+
+Loading environments: 100%|██████████| 10/10 [02:00<00:00, 12.38s/it]
+Loading environments: 100%|██████████| 10/10 [02:00<00:00, 12.09s/it]
 t-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
 2025-02-07 07:41:47 [146,073ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.4]) (impl: carb.windowing-glfw.plugin)
 2025-02-07 07:41:51 [150,148ms] [Warning] [omnigibson.robots.fetch] Fetch wheel links are post-processed to use sphere approximation collision meshes. Please ignore any previous errors about these collision meshes.
@@ -1680,3 +1692,62 @@ Episode length: 81.00 +/- 0.00
 |    learning_rate   | 0.0003   |
 |    n_updates       | 49989    |
 ---------------------------------
+Traceback (most recent call last):
+  File "/coc/flash8/atian31/repos/ReKep/train_sb3.py", line 151, in <module>
+    elif args.algo == 'TQC':
+  File "/coc/flash8/atian31/repos/ReKep/train_sb3.py", line 144, in main
+    )
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/sac/sac.py", line 307, in learn
+    return super().learn(
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 328, in learn
+    rollout = self.collect_rollouts(
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 568, in collect_rollouts
+    if not callback.on_step():
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 114, in on_step
+    return self._on_step()
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 223, in _on_step
+    continue_training = callback.on_step() and continue_training
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 114, in on_step
+    return self._on_step()
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 223, in _on_step
+    continue_training = callback.on_step() and continue_training
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 114, in on_step
+    return self._on_step()
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/callbacks.py", line 464, in _on_step
+    episode_rewards, episode_lengths = evaluate_policy(
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/evaluation.py", line 94, in evaluate_policy
+    new_observations, rewards, dones, infos = env.step(actions)
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 206, in step
+    self.step_async(actions)
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 58, in step_wait
+    for env_idx in range(self.num_envs):
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/monitor.py", line 108, in step
+    self.results_writer.write_row(ep_info)
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/stable_baselines3/common/monitor.py", line 211, in write_row
+    self.file_handler.flush()
+OSError: [Errno 5] Input/output error
+Fatal Python error: Segmentation fault
+
+Thread 0x00007ef131609700 (most recent call first):
+  <no Python frame>
+
+Thread 0x00007ef15b7fe700 (most recent call first):
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 324 in wait
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 607 in wait
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/rich/live.py", line 29 in run
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x00007ef15bfff700 (most recent call first):
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 324 in wait
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/queue.py", line 180 in get
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/tensorboard/summary/writer/event_file_writer.py", line 269 in _run
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/site-packages/tensorboard/summary/writer/event_file_writer.py", line 244 in run
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/nethome/atian31/flash8/miniconda3/envs/omnigibson/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Current thread 0x00007f042ebae740 (most recent call first):
+  <no Python frame>
+
+Extension modules: numpy.core._multiarray_umath, numpy.core._multiarray_tests, numpy.linalg._umath_linalg, numpy.fft._pocketfft_internal, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, scipy._lib._ccallback_c, yaml._yaml, numba.core.typeconv._typeconv, numba._helperlib, numba._dynfunc, numba._dispatcher, numba.core.runtime._nrt_python, numba.np.ufunc._internal, numba.experimental.jitclass._box, scipy.sparse._sparsetools, _csparsetools, scipy.sparse._csparsetools, scipy.linalg._fblas, scipy.linalg._flapack, scipy.linalg.cython_lapack, scipy.linalg._cythonized_array_utils, scipy.linalg._solve_toeplitz, scipy.linalg._decomp_lu_cython, scipy.linalg._matfuncs_sqrtm_triu, scipy.linalg.cython_blas, scipy.linalg._matfuncs_expm, scipy.linalg._decomp_update, scipy.sparse.linalg._dsolve._superlu, scipy.sparse.linalg._eigen.arpack._arpack, scipy.sparse.linalg._propack._spropack, scipy.sparse.linalg._propack._dpropack, scipy.sparse.linalg._propack._cpropack, scipy.sparse.linalg._propack._zpropack, scipy.sparse.csgraph._tools, scipy.sparse.csgraph._shortest_path, scipy.sparse.csgraph._traversal, scipy.sparse.csgraph._min_spanning_tree, scipy.sparse.csgraph._flow, scipy.sparse.csgraph._matching, scipy.sparse.csgraph._reordering, scipy.spatial._ckdtree, scipy._lib.messagestream, scipy.spatial._qhull, scipy.spatial._voronoi, scipy.spatial._distance_wrap, scipy.spatial._hausdorff, scipy.special._ufuncs_cxx, scipy.special._ufuncs, scipy.special._specfun, scipy.special._comb, scipy.special._ellip_harm_2, scipy.spatial.transform._rotation, h5py._errors, h5py.defs, h5py._objects, h5py.h5, h5py.utils, h5py.h5t, h5py.h5s, h5py.h5ac, h5py.h5p, h5py.h5r, h5py._proxy, h5py._conv, h5py.h5z, h5py.h5a, h5py.h5d, h5py.h5ds, h5py.h5g, h5py.h5i, h5py.h5f, h5py.h5fd, h5py.h5pl, h5py.h5o, h5py.h5l, h5py._selector, PIL._imaging, PIL._imagingft, gmpy2.gmpy2, kiwisolver._cext, scipy.optimize._group_columns, scipy.optimize._trlib._trlib, scipy.optimize._lbfgsb, _moduleTNC, scipy.optimize._moduleTNC, scipy.optimize._cobyla, scipy.optimize._slsqp, scipy.optimize._minpack, scipy.optimize._lsq.givens_elimination, scipy.optimize._zeros, scipy.optimize._highs.cython.src._highs_wrapper, scipy.optimize._highs._highs_wrapper, scipy.optimize._highs.cython.src._highs_constants, scipy.optimize._highs._highs_constants, scipy.linalg._interpolative, scipy.optimize._bglu_dense, scipy.optimize._lsap, scipy.optimize._direct, psutil._psutil_linux, psutil._psutil_posix, markupsafe._speedups, sklearn.__check_build._check_build, scipy.integrate._odepack, scipy.integrate._quadpack, scipy.integrate._vode, scipy.integrate._dop, scipy.integrate._lsoda, scipy.interpolate._fitpack, scipy.interpolate._dfitpack, scipy.interpolate._bspl, scipy.interpolate._ppoly, scipy.interpolate.interpnd, scipy.interpolate._rbfinterp_pythran, scipy.interpolate._rgi_cython, scipy.special.cython_special, scipy.stats._stats, scipy.stats._biasedurn, scipy.stats._levy_stable.levyst, scipy.stats._stats_pythran, scipy._lib._uarray._uarray, scipy.stats._ansari_swilk_statistics, scipy.stats._sobol, scipy.stats._qmc_cy, scipy.stats._mvn, scipy.stats._rcont.rcont, scipy.stats._unuran.unuran_wrapper, scipy.ndimage._nd_image, _ni_label, scipy.ndimage._ni_label, pandas._libs.tslibs.ccalendar, pandas._libs.tslibs.np_datetime, pandas._libs.tslibs.dtypes, pandas._libs.tslibs.base, pandas._libs.tslibs.nattype, pandas._libs.tslibs.timezones, pandas._libs.tslibs.fields, pandas._libs.tslibs.timedeltas, pandas._libs.tslibs.tzconversion, pandas._libs.tslibs.timestamps, pandas._libs.properties, pandas._libs.tslibs.offsets, pandas._libs.tslibs.strptime, pandas._libs.tslibs.parsing, pandas._libs.tslibs.conversion, pandas._libs.tslibs.period, pandas._libs.tslibs.vectorized, pandas._libs.ops_dispatch, pandas._libs.missing, pandas._libs.hashtable, pandas._libs.algos, pandas._libs.interval, pandas._libs.lib, pandas._libs.ops, pandas._libs.hashing, pandas._libs.arrays, pandas._libs.tslib, pandas._libs.sparse, pandas._libs.internals, pandas._libs.indexing, pandas._libs.index, pandas._libs.writers, pandas._libs.join, pandas._libs.window.aggregations, pandas._libs.window.indexers, pandas._libs.reshape, pandas._libs.groupby, pandas._libs.json, pandas._libs.parsers, pandas._libs.testing, sklearn.utils._isfinite, sklearn.utils.sparsefuncs_fast, sklearn.utils.murmurhash, sklearn.utils._openmp_helpers, sklearn.metrics.cluster._expected_mutual_info_fast, sklearn.preprocessing._csr_polynomial_expansion, sklearn.preprocessing._target_encoder_fast, sklearn.metrics._dist_metrics, sklearn.metrics._pairwise_distances_reduction._datasets_pair, sklearn.utils._cython_blas, sklearn.metrics._pairwise_distances_reduction._base, sklearn.metrics._pairwise_distances_reduction._middle_term_computer, sklearn.utils._heap, sklearn.utils._sorting, sklearn.metrics._pairwise_distances_reduction._argkmin, sklearn.metrics._pairwise_distances_reduction._argkmin_classmode, sklearn.utils._vector_sentinel, sklearn.metrics._pairwise_distances_reduction._radius_neighbors, sklearn.metrics._pairwise_distances_reduction._radius_neighbors_classmode, sklearn.metrics._pairwise_fast, sklearn.neighbors._partition_nodes, sklearn.neighbors._ball_tree, sklearn.neighbors._kd_tree, sklearn.utils.arrayfuncs, sklearn.utils._random, sklearn.utils._seq_dataset, sklearn.linear_model._cd_fast, _loss, sklearn._loss._loss, sklearn.svm._liblinear, sklearn.svm._libsvm, sklearn.svm._libsvm_sparse, sklearn.utils._weight_vector, sklearn.linear_model._sgd_fast, sklearn.linear_model._sag_fast, sklearn.decomposition._online_lda_fast, sklearn.decomposition._cdnmf_fast, _cffi_backend, google._upb._message, _brotli, sklearn.utils._fast_dict, sklearn.cluster._hierarchical_fast, sklearn.cluster._k_means_common, sklearn.cluster._k_means_elkan, sklearn.cluster._k_means_lloyd, sklearn.cluster._k_means_minibatch, sklearn.cluster._dbscan_inner, sklearn.cluster._hdbscan._tree, sklearn.cluster._hdbscan._linkage, sklearn.cluster._hdbscan._reachability, sklearn._isotonic, sklearn.tree._utils, sklearn.tree._tree, sklearn.tree._splitter, sklearn.tree._criterion, sklearn.neighbors._quad_tree, sklearn.manifold._barnes_hut_tsne, sklearn.manifold._utils, omni.mdl.pymdlsdk._pymdlsdk, osqp._osqp, multidict._multidict, yarl._quoting_c, aiohttp._helpers, aiohttp._http_writer, aiohttp._http_parser, aiohttp._websocket, frozenlist._frozenlist, scipy.io.matlab._mio_utils, scipy.io.matlab._streams, scipy.io.matlab._mio5_utils (total: 258)
+/var/lib/slurm/slurmd/job195027/slurm_script: line 15: 2389124 Segmentation fault      (core dumped) python train_sb3.py --algo SAC

@@ -1,12 +1,20 @@
+###########################################
+
 ENVS_PER_GPU = 10
-TOTAL_TIMESTEPS = 1_000_000
-SAVE_FREQ = TOTAL_TIMESTEPS // ENVS_PER_GPU // 20
-EVAL_FREQ = 10_000 // ENVS_PER_GPU
+TOTAL_TIMESTEPS = 10_000_000
+SAVE_FREQ = TOTAL_TIMESTEPS // ENVS_PER_GPU // 50
+EVAL_FREQ = 50_000 // ENVS_PER_GPU
+
+from omnigibson.macros import gm
+gm.ENABLE_FLATCACHE=True
+gm.USE_GPU_DYNAMICS=False
+gm.RENDER_VIEWER_CAMERA=False
+gm.ENABLE_TRANSITION_RULES=False
+gm.ENABLE_HQ_RENDERING=False
  
+print(gm)
 
-
-
-
+###########################################
 
 
 
@@ -20,7 +28,7 @@ import json
 import os
 import argparse
 from environment import ReKepOGEnv, CustomOGEnv
-from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from keypoint_proposal import KeypointProposer
 from constraint_generation import ConstraintGenerator
 from ik_solver import IKSolver
@@ -30,7 +38,6 @@ from visualizer import Visualizer
 import transform_utils as T
 from rlkit_custom import CustomEnvReplayBuffer
 from omnigibson.robots.fetch import Fetch
-from omnigibson.macros import gm
 from rlkit_utils import *
 from rlkit_custom import collect_rekep_paths
 from robomimic.utils.tensor_utils import flatten_nested_dict_list
@@ -53,17 +60,11 @@ from utils import (
     print_opt_debug_dict,
 )
 
-###########################################
 
-
-###########################################
 
 
 
 # assert TOTAL_TIMESTEPS % ENVS_PER_GPU == 0 and (TOTAL_TIMESTEPS // ENVS_PER_GPU) % SAVE_FREQ == 0 
-gm.ENABLE_FLATCACHE=True
-gm.USE_GPU_DYNAMICS=False
-gm.RENDER_VIEWER_CAMERA=False
 
 def setup_ddp():
     # DDP setup
@@ -89,13 +90,7 @@ def main():
     print(f'Which Algo? {args.algo}')
 
    
-    tensorboard_log_dir = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            "log_dir", time.strftime("%Y%m%d-%H%M%S")
-         )
-
-    os.makedirs(tensorboard_log_dir, exist_ok=True)
-
+    
 
     task_list = {
         'pen': {
@@ -113,14 +108,30 @@ def main():
     config['scene']['scene_file'] = scene_file
     
     rekep_program_dir = '/coc/flash8/atian31/repos/ReKep/./vlm_query/2025-01-19_02-06-17_pick_up_the_white_pen_in_the_middle._'
-    model_path = '/nethome/atian31/flash8/repos/ReKep/pen_pickup_models/Pen_Pickup_rnn/20250120004223/models/model_epoch_2893_best_validation_14653.164111328126.pth'
-   
-    t=time.perf_counter()
-   # if args.debug:
-   #     TOTAL_TIMESTEPS = 1000
-   #     SAVE_FREQ = 500
-   #     ENVS_PER_GPU = 2
-   #     EVAL_FREQ = 25
+    model_path = None #'/nethome/atian31/flash8/repos/ReKep/pen_pickup_models/Pen_Pickup_rnn/20250120004223/models/model_epoch_2893_best_validation_14653.164111328126.pth'
+
+    global ENVS_PER_GPU 
+    global TOTAL_TIMESTEPS 
+    global EVAL_FREQ 
+    global SAVE_FREQ 
+    
+    if args.debug:
+        TOTAL_TIMESTEPS = 2000
+        SAVE_FREQ = 200
+        ENVS_PER_GPU = 2
+        EVAL_FREQ = 100
+    t = time.perf_counter()
+
+    tensorboard_log_dir = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "log_dir",
+             args.algo, 'ORACLE' if args.oracle else "VLM",
+             time.strftime("%Y%m%d-%H%M%S")
+         )
+    
+
+    os.makedirs(tensorboard_log_dir, exist_ok=True)
+    
     
     eval_env = DummyVecEnv([
         lambda: make_env(config, rekep_program_dir, render_on_step=False, use_oracle_reward=use_oracle_reward, bc_policy =model_path)
@@ -133,26 +144,42 @@ def main():
         bc_policy=model_path,
         use_oracle_reward=use_oracle_reward
     )
+ 
+    
+   
+
+ 
+   # vec_env = VecNormalize(vec_env, training=True)
+   # eval_env = VecNormalize(eval_env, training=False)
     print(f'ENV made in {time.perf_counter()-t} s')
     checkpoint_callback = CheckpointCallback(save_freq=SAVE_FREQ, save_path=tensorboard_log_dir, name_prefix='')
     eval_callback = EvalCallback(eval_env,
                                 best_model_save_path=tensorboard_log_dir,
                                 eval_freq=EVAL_FREQ,   
-                                n_eval_episodes=3,
+                                n_eval_episodes=6,
                                 deterministic=True,
                                 render=False
     )
 
     callback = CallbackList([checkpoint_callback, eval_callback])
+
+    train_freq=(400, "step")
+    gradient_steps=400
+    #from stable_baselines3.common.noise import NormalActionNoise
+    #action_noise=NormalActionNoise(mean=0, sigma=0.2)
+
     if args.algo == 'SAC':
-        model = SAC("MlpPolicy", vec_env, verbose=2,  tensorboard_log=tensorboard_log_dir)
+        model = SAC("MlpPolicy", vec_env, learning_starts=5000, train_freq = train_freq, gradient_steps=gradient_steps, learning_rate=1e-4, verbose=2,  tensorboard_log=tensorboard_log_dir)
     elif args.algo == 'PPO':
+        #model = PPO.load('/nethome/atian31/flash8/repos/ReKep/log_dir/PPO/ORACLE/20250213-225233/_200000_steps.zip')
+        #model.set_env(vec_env)
         model = PPO("MlpPolicy", vec_env, verbose=2, gae_lambda=.97, tensorboard_log=tensorboard_log_dir)
     elif args.algo == 'TQC':
-        model = TQC('MlpPolicy', vec_env, verbose=2, tensorboard_log = tensorboard_log_dir)
-
+        model = TQC('MlpPolicy', vec_env, learning_starts=5000, train_freq = train_freq, gradient_steps=gradient_steps, learning_rate = 1e-4,  verbose=2, tensorboard_log = tensorboard_log_dir)
     
     model.learn(total_timesteps=TOTAL_TIMESTEPS, progress_bar=True,  callback=callback, tb_log_name="run")
+    if args.algo =='SAC' or args.algo == 'TQC':
+        model.save_replay_buffer(os.path.join(tensorboard_log_dir, "sac_replay_buffer"))
     #model.save(os.path.join(tensorboard_log_dir,'model.zip'))
     # Cleanup
  

@@ -11,3 +11,5 @@ pen_pickup_models
 pen_pick_place_models
 data
 log_dir/
+slurm_logs/
+eval_logs/

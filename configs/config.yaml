@@ -17,7 +17,7 @@ env:
   flatten_obs_space: True
   video_cache_size: 2000
   og_sim:
-    physics_frequency: 120
+    physics_frequency: 90
     rendering_frequency: 30
     action_frequency: 30
     

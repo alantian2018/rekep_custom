@@ -3,12 +3,9 @@ import os
 import yaml
 import tqdm
 import omnigibson as og
-from omnigibson.macros import gm
+
 from omnigibson.utils.ui_utils import choose_from_options
 import imageio
-# Make sure object states are enabled
-gm.ENABLE_OBJECT_STATES = True
-gm.USE_GPU_DYNAMICS = True
 
 
 def main(random_selection=False, headless=True, short_exec=False):

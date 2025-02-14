@@ -12,7 +12,7 @@ import open3d as o3d
 import imageio
 from collections import OrderedDict
 import omnigibson as og
-from omnigibson.macros import gm
+
 from omnigibson.utils.usd_utils import PoseAPI, mesh_prim_mesh_to_trimesh_mesh, mesh_prim_shape_to_trimesh_mesh
 from omnigibson.robots.fetch import Fetch
 from omnigibson.controllers import IsGraspingState
@@ -34,10 +34,7 @@ from omnigibson.robots.manipulation_robot import ManipulationRobot
 from omnigibson.controllers.controller_base import ControlType, BaseController
 import torch
 # Don't use GPU dynamics and use flatcache for performance boost
-gm.USE_GPU_DYNAMICS = False
-gm.ENABLE_FLATCACHE = True
-gm.ENABLE_OBJECT_STATES = True
-gm.ENABLE_TRANSITION_RULES = False
+ 
 def calculate_bbox_to_point(bbox, p):
     min_x, max_x = min(bbox[0][0],bbox[1][0]), max(bbox[0][0],bbox[1][0])
     min_y, max_y = min(bbox[0][1],bbox[1][1]), max(bbox[0][1],bbox[1][1])
@@ -155,15 +152,19 @@ class CustomOGEnv(og.Environment):
         self.objs = OrderedDict(
             {'pen_1': {'randomize' : randomize,
                        'obs' : True,
-                  'min_bounds':[-0.45, -0.35, 0.78],
-                  'max_bounds':[-0.15, -0.05, 0.8]},
+                  'min_bounds':[-0.45, -0.35, 0.775],
+                  'max_bounds':[0.05, 0.05, 0.781]},
              
-             'table_1' : { 'randomize' : False, 'obs':False}})
+           #  'table_1' : { 'randomize' : False, 'obs':False}
+             }
+            
+             )
         self.robot = None
       
         self.use_oracle_reward=use_oracle_reward
         print(f'Oracle reward {self.use_oracle_reward}')
         super().__init__(configs, in_vec_env)
+        self._automatic_reset = True
 
         self.robot = self.robots[0]
         self.randomize=randomize
@@ -175,8 +176,9 @@ class CustomOGEnv(og.Environment):
         self.step_counter = 0        
         self.low_dim=low_dim
         self.config = config
-        self.action_dim= 8
+        self.action_dim= 7
         self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.action_dim,), dtype=np.float32)
+        
         
         if not in_vec_env:
             self.scene.update_initial_state()
@@ -185,6 +187,8 @@ class CustomOGEnv(og.Environment):
                         # Update the initial state of the scene
             self.init_pos = None
             self._initialize_cameras(self.config['camera'])
+            shape = self.get_low_dim_obs().shape[0]
+            self.observation_space = gym.spaces.Box(low=-np.inf, high = np.inf, shape = (shape,), dtype=np.float32)
         
 
         
@@ -199,13 +203,16 @@ class CustomOGEnv(og.Environment):
                 self.observation_size = obs_size
                 obs_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=obs_size, dtype=np.float32)
                 self.observation_space = obs_space
+                shape = self.get_low_dim_obs().shape[0]
+                self.observation_space = gym.spaces.Box(low=-np.inf, high = np.inf, shape = (shape,), dtype=np.float32)
 
             else:
                 raise NotImplementedError()
 
             # Update the initial state of the scene
-            self.action_dim= 8
+            self.action_dim= 7
             self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.action_dim,), dtype=np.float32)
+            
             self.init_pos = None
             self._initialize_cameras(self.config['camera'])
             
@@ -240,10 +247,11 @@ class CustomOGEnv(og.Environment):
         if self.get_done():
             rew += 2.25
 
-       
+        dist = calculate_bbox_to_point(self.get_aabb('pen_1'), self.get_ee_pos())
 
-        reaching_reward = 1 - np.tanh(10.0 * dist)
-        return rew +reaching_reward
+        reaching_reward = 1 - np.tanh(100* dist)
+        reward =  rew +reaching_reward
+
     
     def get_reward(self):
         if self.use_oracle_reward:
@@ -275,27 +283,28 @@ class CustomOGEnv(og.Environment):
 
     def step(self, action):
         
-        if  not (action.size == 12 or action.size==11):
+        if  (action.shape[-1] == 7):
             a = np.zeros(12)
-            a[4:]=action
+            a[4:-2]=action[:-1]
+            a[-2:] = action[-1]
             action = a
 
-        next_o, reward, terminated, truncated, info = super().step(action)
+        next_o, reward, done, truncated, info = super().step(action)
         
         reward = self.get_reward()
-
+        
         if self.low_dim:
             next_o  = self.get_low_dim_obs()
-        terminated = self.get_done()
+        done = self.get_done()
         
-        if terminated:
+        if done:
             print('DONE!')
         self.step_counter +=1
 
-        if (self.step_counter > 40):
-            truncated = not terminated
-            terimnated=True
-        return next_o,reward,terminated,truncated, dict()
+        if (self.step_counter >= 40):
+            truncated = not done
+            done = True
+        return next_o,reward,done,truncated, info
 
     def render(self):
         cam_obs = self.get_cam_obs()
@@ -303,12 +312,11 @@ class CustomOGEnv(og.Environment):
         return rgb
 
     def reset(self, seed=None, objs=None):
-        self.step_couter=0
+        
         if seed is not None:
             torch.manual_seed(seed)
             np.random.seed(seed)
-
-            
+        
         super().reset(get_obs=False)
         self.init_pos = dict()
         if self.randomize and objs is None:
@@ -332,9 +340,11 @@ class CustomOGEnv(og.Environment):
 
         for i in range (5):
             og.sim.step()
- 
+        
         if self.robot is not None:
-            return self.get_low_dim_obs()
+            self.step_counter=0
+            print('resetted')
+            return self.get_low_dim_obs(), {}
 
     def get_done(self):
         return self.is_grasping(self.pen)
@@ -459,23 +469,26 @@ class CustomOGEnv(og.Environment):
 
     def get_low_dim_obs(self):
         
-        proprio = torch.cat(
-            (
-            self.get_arm_joint_postions(),
-            torch.tensor(self.get_ee_pose())
-            )
-        )
-        assert len(proprio)!=0
-        
         raw_obs = super().get_obs()
-        for robot in raw_obs[0]:
-            proprio = torch.cat ((proprio, raw_obs[0][robot]['proprio']) )
+        
+        proprio = [self.robot.get_eef_position(), self.robot.get_eef_orientation()]
+        
+        
+        #for robot in raw_obs:
+        #    d=robot['Fetch']['proprio']
+        #    if not isinstance(d, dict):
+        #        proprio.append(d)
+
+        proprio = torch.cat(proprio, dim=0)
         
         for obj in self.objs:
             current_object = self.scene.object_registry("name", obj)
-            pos, orn = current_object.get_position_orientation()
-            proprio = torch.cat((proprio, pos, orn))
+            bbox = torch.cat(current_object.aabb)
+            pose = torch.cat(current_object.get_position_orientation())
+            proprio = torch.cat((proprio, pose, bbox))
+       
         proprio = np.asarray(proprio)
+        
         return proprio
     
 
@@ -540,6 +553,51 @@ class CustomOGEnv(og.Environment):
 
     def shutdown(self):
         og.shutdown()
+
+    def _post_step(self, action):
+        """Apply the post-sim-step part of an environment step, i.e. grab observations and return the step results."""
+        # Grab observations
+        
+        assert sum(action[:4])==0 and action.shape[0]==12
+
+        obs = self.get_low_dim_obs()
+
+        # Step the scene graph builder if necessary
+        if self._scene_graph_builder is not None:
+            self._scene_graph_builder.step(self.scene)
+
+        # Grab reward, done, and info, and populate with internal info
+        reward, done, info = self.task.step(self, action)
+        self._populate_info(info)
+        reward, done = self.get_reward(), self.get_done()
+        info["obs_info"] = 'low dim'
+     #   print(f'VEC REW: {reward}')
+
+ 
+
+        if done and self._automatic_reset:
+            # Add lost observation to our information dict, and reset
+            info["last_observation"] = obs
+            obs = self.reset()
+
+        # Hacky way to check for time limit info to split terminated and truncated
+        terminated = False
+        truncated = False
+      
+        for tc, tc_data in info["done"]["termination_conditions"].items():
+            if tc_data["done"]:
+                if tc == "timeout":
+                    truncated = True
+                else:
+                    terminated = True
+        terminated=done
+        assert (terminated or truncated) == done, "Terminated and truncated must match done!"
+
+        # Increment step
+        self._current_step += 1
+        print(reward)
+        return obs, reward, terminated, truncated, info
+
 
 
 
@@ -727,6 +785,7 @@ class ReKepOGEnv:
         print(f'{bcolors.HEADER}Reset done.{bcolors.ENDC}')
         self.step_counter=0
         self.traj.clear()
+        
 
     
 
@@ -993,7 +1052,7 @@ class RLEnvWrapper(CustomOGEnv):
         self.threshold = threshold
 
     def reset(self, seed=None):
-        self.step_couter=0
+        self.step_counter=0
         obs = super().reset(seed=seed) 
         step = 0
       
@@ -1008,44 +1067,5 @@ class RLEnvWrapper(CustomOGEnv):
         self.step_counter=0
     
 
-    def _post_step(self, action):
-        """Apply the post-sim-step part of an environment step, i.e. grab observations and return the step results."""
-        # Grab observations
-         
-        assert sum(action[:4])==0 and action.shape[0]==12
-
-        obs = self.get_low_dim_obs()
-
-        # Step the scene graph builder if necessary
-        if self._scene_graph_builder is not None:
-            self._scene_graph_builder.step(self.scene)
-
-        # Grab reward, done, and info, and populate with internal info
-        reward, done, info = self.task.step(self, action)
-        self._populate_info(info)
-        reward,done = self.get_reward(), self.get_done()
-        info["obs_info"] = 'low dim'
-
-        if done and self._automatic_reset:
-            # Add lost observation to our information dict, and reset
-            info["last_observation"] = obs
-            obs = self.reset()
-
-        # Hacky way to check for time limit info to split terminated and truncated
-        terminated = False
-        truncated = False
-        for tc, tc_data in info["done"]["termination_conditions"].items():
-            if tc_data["done"]:
-                if tc == "timeout":
-                    truncated = True
-                else:
-                    terminated = True
-        terminated=done
-        assert (terminated or truncated) == done, "Terminated and truncated must match done!"
-
-        # Increment step
-        self._current_step += 1
-         
-        return obs, reward, terminated, truncated, info
-
+    
     

@@ -17,17 +17,28 @@ last_stepped_time = None
 from environment import CustomOGEnv, RLEnvWrapper
 from stable_baselines3.common.monitor import Monitor
 from gym import Wrapper
- 
+from gymnasium.wrappers import NormalizeReward
 
 def make_env(config, rekep_program_dir, render_on_step, use_oracle_reward,bc_policy):
-    env = RLEnvWrapper(
-        copy.deepcopy(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim'])),
-        in_vec_env=True,
-        config=copy.deepcopy(config),
-        randomize=True,
-        low_dim=True,
-        use_oracle_reward=use_oracle_reward,
-        bc_policy  =bc_policy
+    if bc_policy is None:
+        env =CustomOGEnv(
+            copy.deepcopy(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim'])),
+            in_vec_env=True,
+            config=copy.deepcopy(config),
+            randomize=True,
+            low_dim=True,
+            use_oracle_reward=use_oracle_reward,
+             
+        )
+    else:
+        env = RLEnvWrapper(
+            copy.deepcopy(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim'])),
+            in_vec_env=True,
+            config=copy.deepcopy(config),
+            randomize=True,
+            low_dim=True,
+            use_oracle_reward=use_oracle_reward,
+            bc_policy  =bc_policy
     )
 
     with open(os.path.join(rekep_program_dir, 'metadata.json'), 'r') as f:
@@ -39,7 +50,7 @@ def make_env(config, rekep_program_dir, render_on_step, use_oracle_reward,bc_pol
 
     og.sim.play()
     env.post_play_load()
-    env = Monitor(env, filename="./eval_logs/")  # Wrap in Monitor for logging
+    env = Monitor(env)  # Wrap in Monitor for logging
     return env
 
 class CustomSB3VectorEnvironment(DummyVecEnv):
@@ -53,6 +64,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
         # First we create the environments. We can't let DummyVecEnv do this for us because of the play call
         # needing to happen before spaces are available for it to read things from.
         if bc_policy is None:
+         
             tmp_envs = [
                 CustomOGEnv(
                     copy.deepcopy(dict(scene=config['scene'], robots=[config['robot']['robot_config']], env=config['og_sim'])),
@@ -61,6 +73,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
                     randomize=True,
                     low_dim=True,
                     use_oracle_reward=use_oracle_reward
+                
                 )
                 for _ in trange(num_envs, desc="Loading environments")
             ]
@@ -84,6 +97,8 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
             env.set_rekep_program_dir(rekep_program_dir)
             env.register_keypoints(program_info['init_keypoint_positions'])
             env.set_reward_function_for_stage(1)
+
+        
 
         # Play, and finish loading all the envs
         og.sim.play()
@@ -120,9 +135,12 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
                 last_stepped_time = time.time()
 
             self.actions = actions
-            if self.actions.shape[-1]!=12:
-                self.actions = np.pad(actions,((0,0), (4,0)))
             
+            if self.actions.shape[-1] != 12:
+                self.actions = np.pad(actions, ((0, 0), (4, 0)))
+            self.actions = np.concatenate([self.actions, self.actions[:, [-1]]], axis=1)
+        
+
             for i, action in enumerate(self.actions):
                 self.envs[i]._pre_step(action)
 
@@ -140,7 +158,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
                 # See https://github.com/openai/gym/issues/3102
                 # Gym 0.26 introduces a breaking change
                 self.buf_infos[env_idx]["TimeLimit.truncated"] = truncated and not terminated
-
+              
                 if self.buf_dones[env_idx]:
                     # save final observation where user can get it, then reset
                     self.buf_infos[env_idx]["terminal_observation"] = obs
@@ -149,7 +167,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
              
             return (
                 self._obs_from_buf(),
-                th.clone(th.from_numpy(self.buf_rews)),
+                self.buf_rews,
                 self.buf_dones,
                 copy.deepcopy(self.buf_infos),
             )
