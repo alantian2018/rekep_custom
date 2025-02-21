@@ -11,12 +11,12 @@ import copy
 from tqdm import trange
 import omnigibson as og
 if __name__=='__main__':
-    rl_path = "/nethome/atian31/flash8/repos/ReKep/log_dir/PPO/ORACLE/20250207-205916/_700000_steps.zip"
+    rl_path = "/coc/flash8/atian31/repos/ReKep/log_dir/SAC/VLM/20250221-021359/_1000000_steps.zip"
     rekep_program_dir = '/coc/flash8/atian31/repos/ReKep/./vlm_query/2025-01-19_02-06-17_pick_up_the_white_pen_in_the_middle._'
     bc_policy =None# '/nethome/atian31/flash8/repos/ReKep/pen_pickup_models/Pen_Pickup_rnn/20250120004223/models/model_epoch_2893_best_validation_14653.164111328126.pth'
     
 
-    model = PPO.load(rl_path)
+    model = SAC.load(rl_path)
     base=time.strftime("%Y%m%d-%H%M%S")
     save_path = os.path.join (os.path.dirname(rl_path), base+'.mp4')
     video_buffer = imageio.get_writer(save_path, fps=30)
@@ -51,7 +51,7 @@ if __name__=='__main__':
     
     env.set_rekep_program_dir(rekep_program_dir)
     env.set_reward_function_for_stage(1)
-
+    
     
     for _ in trange(num_episodes):
         step = 0
@@ -59,7 +59,7 @@ if __name__=='__main__':
         done = False
         total_reward = 0
         rew = []
-        while not done and step < 40:
+        while not done:
             action, _states = model.predict(obs, deterministic=True)  # Set False for stochastic policies
             obs, reward, done, t,  info = env.step(action)
             total_reward += reward

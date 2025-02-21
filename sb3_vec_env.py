@@ -173,6 +173,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
             )
 
     def reset(self):
+        
         with og.sim.render_on_step(self.render_on_step):
             self.last_reset_time = time.time()
 
@@ -182,7 +183,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
 
             # Settle the environments
             # TODO: fix this once we make the task classes etc. vectorized
-            for _ in range(30):
+            for _ in range(13):
                 og.sim.step()
 
             # Get the new obs

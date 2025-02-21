@@ -3,7 +3,7 @@
 #SBATCH --partition=overcap
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=17
-#SBATCH --gres=gpu:rtx_6000:1
+#SBATCH --gres=gpu:a40:1
 #SBATCH --qos=long
 #SBATCH --output=/nethome/atian31/flash8/repos/ReKep/slurm_logs/PPO/%j.out
 

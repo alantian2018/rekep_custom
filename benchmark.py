@@ -55,33 +55,18 @@ env = CustomOGEnv(dict(scene=config['scene'], robots=[config['robot']['robot_con
 env.set_rekep_program_dir('/nethome/atian31/flash8/repos/ReKep/vlm_query/2025-01-19_02-06-17_pick_up_the_white_pen_in_the_middle._')
 env.set_reward_function_for_stage(1)
 mesh = env.get_mesh('pen_1')
-
+#breakpoint()
 start_time = time.perf_counter()
 
-env.reset()
+ 
 
-from stable_baselines3.common.env_checker import check_env
-breakpoint()
-check_env(env)
-
-"""
+ 
 video_buffer = imageio.get_writer('hah.mp4', fps=1)
-min_bounds=[-0.45, -0.35, 0.78]
-max_bounds=[0.1, 0.1, 0.785]
-for x in (min_bounds[0], max_bounds[0]):
-    for y in (min_bounds[1],max_bounds[1]): 
-        
-        current_object = env.scene.object_registry("name", "pen_1")
-       
-        pos = np.array([x,y,0.781])     
-        current_object.set_position(
-            position = pos
-        ) 
-        for _ in range (10):
-            og.sim.step()
-    
+ 
+for i in trange(20):
+        env.reset()
         rgb = env.render()
         video_buffer.append_data(rgb)
 video_buffer.close()
-"""
+ 
 og.shutdown()

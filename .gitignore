@@ -13,3 +13,4 @@ data
 log_dir/
 slurm_logs/
 eval_logs/
+wandb/

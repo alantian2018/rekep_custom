@@ -149,6 +149,7 @@ class CustomOGEnv(og.Environment):
         
         self.randomize = None
         self.low_dim=low_dim
+
         self.objs = OrderedDict(
             {'pen_1': {'randomize' : randomize,
                        'obs' : True,
@@ -157,19 +158,26 @@ class CustomOGEnv(og.Environment):
              
            #  'table_1' : { 'randomize' : False, 'obs':False}
              }
-            
              )
+        self.max_traj_len = 40
+
+
         self.robot = None
-      
+        self.init_table_pos = None
+        
         self.use_oracle_reward=use_oracle_reward
         print(f'Oracle reward {self.use_oracle_reward}')
         super().__init__(configs, in_vec_env)
-        self._automatic_reset = True
+        self._automatic_reset = False
 
         self.robot = self.robots[0]
         self.randomize=randomize
         self.in_vec_env = in_vec_env
         self.pen = self.scene.object_registry("name", 'pen_1')
+        self.table = self.scene.object_registry('name','table_1')
+        
+        
+
         for _ in range(10):
             og.sim.step()
         self.reward_functions = None
@@ -182,13 +190,12 @@ class CustomOGEnv(og.Environment):
         
         if not in_vec_env:
             self.scene.update_initial_state()
-            obs_size = self.get_low_dim_obs().shape
-            self.observation_size = obs_size
-                        # Update the initial state of the scene
+            obs_size = self.get_low_dim_obs().shape[0]
+           
             self.init_pos = None
             self._initialize_cameras(self.config['camera'])
-            shape = self.get_low_dim_obs().shape[0]
-            self.observation_space = gym.spaces.Box(low=-np.inf, high = np.inf, shape = (shape,), dtype=np.float32)
+           
+            self.observation_space = gym.spaces.Box(low=-np.inf, high = np.inf, shape = (obs_size,), dtype=np.float32)
         
 
         
@@ -199,13 +206,11 @@ class CustomOGEnv(og.Environment):
             self.scene.update_initial_state()
             
             if self.low_dim:
-                obs_size = self.get_low_dim_obs().shape
+                obs_size = self.get_low_dim_obs().shape[0]
                 self.observation_size = obs_size
-                obs_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=obs_size, dtype=np.float32)
+                obs_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(obs_size,), dtype=np.float32)
                 self.observation_space = obs_space
-                shape = self.get_low_dim_obs().shape[0]
-                self.observation_space = gym.spaces.Box(low=-np.inf, high = np.inf, shape = (shape,), dtype=np.float32)
-
+                
             else:
                 raise NotImplementedError()
 
@@ -249,9 +254,11 @@ class CustomOGEnv(og.Environment):
 
         dist = calculate_bbox_to_point(self.get_aabb('pen_1'), self.get_ee_pos())
 
-        reaching_reward = 1 - np.tanh(100* dist)
-        reward =  rew +reaching_reward
-
+        reaching_reward = 1 - np.tanh(10.0* dist)
+        reward =  rew + reaching_reward      
+      #  print(reward)
+        return reward
+      
     
     def get_reward(self):
         if self.use_oracle_reward:
@@ -301,7 +308,7 @@ class CustomOGEnv(og.Environment):
             print('DONE!')
         self.step_counter +=1
 
-        if (self.step_counter >= 40):
+        if (self.step_counter >= self.max_traj_len):
             truncated = not done
             done = True
         return next_o,reward,done,truncated, info
@@ -312,7 +319,7 @@ class CustomOGEnv(og.Environment):
         return rgb
 
     def reset(self, seed=None, objs=None):
-        
+     
         if seed is not None:
             torch.manual_seed(seed)
             np.random.seed(seed)
@@ -320,30 +327,44 @@ class CustomOGEnv(og.Environment):
         super().reset(get_obs=False)
         self.init_pos = dict()
         if self.randomize and objs is None:
-           # print('randomizing')
-            for obj in self.objs:
-                if self.objs[obj]['randomize']:
-                    current_object = self.scene.object_registry("name", obj)
-                    pos,orn = self.get_random_position(current_object, self.objs[obj]['min_bounds'], self.objs[obj]['max_bounds'])         
-                    self.init_pos[obj]=np.concatenate((pos, orn))
-                    current_object.set_position_orientation(
-                        position = pos,
-                        orientation = orn
-                    ) 
+
+            # just for my pen task to work in a vec env.... yea this needs to be cleaned up and put in a new class.
+            table = self.scene.object_registry("name", 'table_1')
+            
+            table_pos, table_orn = table.get_position_orientation()
+            pen_orn = self.pen.get_position_orientation()[1]
+            
+            x = table_pos[0] + np.random.uniform(-0.5,-0.25)
+            y = table_pos[1] + np.random.uniform(-0.5, 0.25)
+            z = 0.71
+            pos = np.array([x,y,z])
+
+            rot_angle = np.random.uniform(0, 2 * np.pi)
+            orn = T.quat_multiply(T.euler2quat(np.array([0,0 ,rot_angle])), np.array(pen_orn))
+            self.init_pos['pen_1']=np.concatenate((pos, orn))
+            self.pen.set_position_orientation(
+                position = pos,
+                orientation = orn
+            ) 
+
         elif objs is not None:
+            assert not self.in_vec_env
             for obj in objs:
                 current_object = self.scene.object_registry("name", obj)
                 current_object.set_position_orientation(
                         position = objs[obj][:3],
                         orientation = objs[obj][3:]
                     ) 
+        if not self.in_vec_env:
+            for i in range (10):
+                og.sim.step()
 
-        for i in range (5):
+        elif self.in_vec_env:   
             og.sim.step()
         
         if self.robot is not None:
             self.step_counter=0
-            print('resetted')
+            self.init_table_pos = self.table.get_position_orientation()[0]
             return self.get_low_dim_obs(), {}
 
     def get_done(self):
@@ -467,28 +488,36 @@ class CustomOGEnv(og.Environment):
             keypoint_positions.append(keypoint)
         return np.array(keypoint_positions)
 
+
     def get_low_dim_obs(self):
         
         raw_obs = super().get_obs()
+
+        if self.init_table_pos is None:
+            self.init_table_pos = self.table.get_position_orientation()[0]
         
-        proprio = [self.robot.get_eef_position(), self.robot.get_eef_orientation()]
+        proprio = [] #[self.robot.get_eef_position() - self.init_table_pos,
+                     # self.robot.get_eef_orientation()]
         
         
-        #for robot in raw_obs:
-        #    d=robot['Fetch']['proprio']
-        #    if not isinstance(d, dict):
-        #        proprio.append(d)
+        for robot in raw_obs:
+            d=robot['Fetch']['proprio']
+            if not isinstance(d, dict):
+                proprio.append(d)
 
         proprio = torch.cat(proprio, dim=0)
         
         for obj in self.objs:
             current_object = self.scene.object_registry("name", obj)
-            bbox = torch.cat(current_object.aabb)
-            pose = torch.cat(current_object.get_position_orientation())
-            proprio = torch.cat((proprio, pose, bbox))
-       
-        proprio = np.asarray(proprio)
-        
+            l, r = current_object.aabb
+            l -= self.init_table_pos
+            r -= self.init_table_pos
+
+            pos, orn = current_object.get_position_orientation()
+
+            pos -= self.init_table_pos
+            proprio = torch.cat((proprio, pos, orn, l, r))
+      #  proprio = np.asarray(proprio)
         return proprio
     
 
@@ -560,6 +589,7 @@ class CustomOGEnv(og.Environment):
         
         assert sum(action[:4])==0 and action.shape[0]==12
 
+        
         obs = self.get_low_dim_obs()
 
         # Step the scene graph builder if necessary
@@ -568,13 +598,15 @@ class CustomOGEnv(og.Environment):
 
         # Grab reward, done, and info, and populate with internal info
         reward, done, info = self.task.step(self, action)
+
+
         self._populate_info(info)
         reward, done = self.get_reward(), self.get_done()
         info["obs_info"] = 'low dim'
-     #   print(f'VEC REW: {reward}')
-
- 
-
+        info['reward'] = reward
+        info['is_success'] = done
+        info['done']['success']=done
+       # breakpoint()
         if done and self._automatic_reset:
             # Add lost observation to our information dict, and reset
             info["last_observation"] = obs
@@ -583,19 +615,30 @@ class CustomOGEnv(og.Environment):
         # Hacky way to check for time limit info to split terminated and truncated
         terminated = False
         truncated = False
-      
+        
+        if done:
+            info['done']['termination_conditions']['sucess']='done'
+
+        if info['episode_length'] >= self.max_traj_len:
+            info['done']['termination_conditions']['timeout']='done'
+           # breakpoint()
         for tc, tc_data in info["done"]["termination_conditions"].items():
-            if tc_data["done"]:
+            if tc_data=="done":
                 if tc == "timeout":
                     truncated = True
                 else:
                     terminated = True
-        terminated=done
+
+        done = terminated or truncated
+        
         assert (terminated or truncated) == done, "Terminated and truncated must match done!"
 
         # Increment step
+        if done:
+            info['done']['terminal_observation'] = obs
+            info['terminal_observation'] = obs
         self._current_step += 1
-        print(reward)
+        
         return obs, reward, terminated, truncated, info
 
 
@@ -771,7 +814,7 @@ class ReKepOGEnv:
         self.og_env.reset(objs)
         self.robot.reset()
         
-
+        
         for _ in range(5): self._step()
         self.open_gripper()
         # moving arm to the side to unblock view 
@@ -1052,7 +1095,7 @@ class RLEnvWrapper(CustomOGEnv):
         self.threshold = threshold
 
     def reset(self, seed=None):
-        self.step_counter=0
+        
         obs = super().reset(seed=seed) 
         step = 0
       

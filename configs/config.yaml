@@ -17,9 +17,9 @@ env:
   flatten_obs_space: True
   video_cache_size: 2000
   og_sim:
-    physics_frequency: 90
-    rendering_frequency: 30
-    action_frequency: 30
+    physics_frequency: 120
+    rendering_frequency: 60
+    action_frequency: 60
     
     
   scene:
@@ -39,7 +39,7 @@ env:
       action_modalities: continuous
       action_normalize: False
       position: [-0.8, 0.0, 0.]
-      grasping_mode: assisted
+      grasping_mode: physical
 
       controller_config:
         base:

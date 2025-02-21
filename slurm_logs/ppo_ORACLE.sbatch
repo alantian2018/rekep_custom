@@ -5,6 +5,7 @@
 #SBATCH --cpus-per-task=17
 #SBATCH --gres=gpu:a40:1
 #SBATCH --qos=long
+#SBATCH --mem=30000
 #SBATCH --output=/nethome/atian31/flash8/repos/ReKep/slurm_logs/PPO/%j.out
 
 
