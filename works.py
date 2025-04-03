@@ -4,7 +4,7 @@ ENVS_PER_GPU = 5
 EVAL_ENVS = 5
 TOTAL_TIMESTEPS = 10_000_000
 SAVE_FREQ = TOTAL_TIMESTEPS // ENVS_PER_GPU // 20
-EVAL_FREQ = 50_000 // ENVS_PER_GPU
+EVAL_FREQ = 10_000 // ENVS_PER_GPU
 
 from omnigibson.macros import gm
 gm.ENABLE_FLATCACHE=True
@@ -38,7 +38,7 @@ from keypoint_proposal import KeypointProposer
 from constraint_generation import ConstraintGenerator
 from ik_solver import IKSolver
 from stable_baselines3.common.vec_env import VecFrameStack, VecMonitor, VecVideoRecorder
-import imageio
+
 from subgoal_solver import SubgoalSolver
 from path_solver import PathSolver
 from visualizer import Visualizer
@@ -67,6 +67,35 @@ from utils import (
     print_opt_debug_dict,
 )
 
+
+class RewardAndLossLogger(BaseCallback):
+    def __init__(self, verbose=0):
+        super().__init__(verbose)
+
+    def _on_step(self):
+       # print(self.logger.name_to_value)
+
+        # Log mean reward
+        if "rollout/ep_rew_mean" in self.logger.name_to_value:
+            reward_mean = self.logger.name_to_value["rollout/ep_rew_mean"]
+            self.logger.record("custom/ep_rew_mean", reward_mean)
+        
+        # Log loss values (PPO)
+        if "train/policy_loss" in self.logger.name_to_value:
+            self.logger.record("custom/policy_loss", self.logger.name_to_value["train/policy_loss"])
+        if "train/value_loss" in self.logger.name_to_value:
+            self.logger.record("custom/value_loss", self.logger.name_to_value["train/value_loss"])
+        
+        # Log loss values (SAC)
+        if "train/actor_loss" in self.logger.name_to_value:
+            self.logger.record("custom/actor_loss", self.logger.name_to_value["train/actor_loss"])
+        if "train/critic_loss" in self.logger.name_to_value:
+            self.logger.record("custom/critic_loss", self.logger.name_to_value["train/critic_loss"]) 
+        if "train/entropy_loss" in self.logger.name_to_value:
+            self.logger.record("custom/entropy_loss", self.logger.name_to_value["train/entropy_loss"])
+
+        return True
+
 class AfterEvalCallback(BaseCallback):
     def __init__(self, env, eval_env, verbose=0):
         super(AfterEvalCallback, self).__init__(verbose)
@@ -77,23 +106,6 @@ class AfterEvalCallback(BaseCallback):
         self.env.reset()
         return True
 
-class SaveReplayBufferCallback(CheckpointCallback):
-    def __init__(self, save_freq, save_path, name_prefix="rl_model",save_replay_buffer=True, verbose=0):
-        super().__init__(save_freq, save_path, name_prefix, verbose)
-        self.save_replay_buffer = save_replay_buffer
-
-    def _on_step(self) -> bool:
-        if self.n_calls % self.save_freq == 0:
-            model_path = os.path.join(self.save_path, f"{self.name_prefix}_{self.num_timesteps}_steps.zip")
-            self.model.save(model_path)
-            
-            # Save the replay buffer separately
-            if self.save_replay_buffer:
-                replay_buffer_path = os.path.join(self.save_path, f"replay_buffer.pkl")
-                if self.model.replay_buffer is not None:
-                    self.model.save_replay_buffer(replay_buffer_path)
-
-        return True
 
 
 # assert TOTAL_TIMESTEPS % ENVS_PER_GPU == 0 and (TOTAL_TIMESTEPS // ENVS_PER_GPU) % SAVE_FREQ == 0 
@@ -114,10 +126,13 @@ def main():
     parser.add_argument("--oracle", action="store_true", help="Set this flag to use oracle rews")
     parser.add_argument("--algo", choices=["PPO",'SAC','TQC'], default='SAC' , help="Choose SAC, PPO or TQC")
     parser.add_argument("--debug", action='store_true')
-    parser.add_argument('--load_dir', type=str)
     args = parser.parse_args()
 
     use_oracle_reward = args.oracle
+
+    print(f'Using oracle? {use_oracle_reward}')
+    print(f'Which Algo? {args.algo}')
+
 
     task_list = {
         'pen': {
@@ -144,11 +159,11 @@ def main():
     global EVAL_ENVS
     
     if args.debug:
-        TOTAL_TIMESTEPS = 200
-        SAVE_FREQ = TOTAL_TIMESTEPS // 2                 * 100
+        TOTAL_TIMESTEPS = 2000
+        SAVE_FREQ = 400
         ENVS_PER_GPU = 2
         EVAL_ENVS = 1
-        EVAL_FREQ = TOTAL_TIMESTEPS // 4                  * 100
+        EVAL_FREQ = 400
          
     t = time.perf_counter()
 
@@ -156,34 +171,33 @@ def main():
             os.path.abspath(os.path.dirname(__file__)),
             "log_dir",
              args.algo, 'ORACLE' if args.oracle else "VLM",
-             'DEBUG/' if args.debug else '',
              time.strftime("%Y%m%d-%H%M%S")
          )
-
+    
 
     os.makedirs(tensorboard_log_dir, exist_ok=True)
 
 
     run = wandb.init(
         entity="alantian2018",
-        project="sb3_omnigibson" + ("_debug" if args.debug else ""),
+        project="sb3_omnigibson",
         sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
         monitor_gym=True,  # auto-upload the videos of agents playing the game
         save_code=True,  # optional
     )
-    print(f'Using oracle? {use_oracle_reward}')
-    print(f'Which Algo? {args.algo}')
 
+    vec_env = CustomSB3VectorEnvironment(
+        num_envs=ENVS_PER_GPU,
+        config=config,
+        rekep_program_dir=rekep_program_dir,
+        render_on_step=False,
+        bc_policy=model_path,
+        use_oracle_reward=use_oracle_reward
+    )
 
-    def wrap_env(env, FRAME_STACK = 3):
-        
-        env = VecFrameStack(env, n_stack = FRAME_STACK)
-      
-        env = VecMonitor(env, info_keywords=('is_success',))
-        
-        return env
-
-
+    vec_env = VecMonitor(vec_env,info_keywords=("is_success",))
+  #  breakpoint()
+    
     eval_env = CustomSB3VectorEnvironment(
         num_envs=EVAL_ENVS,
         config=config,
@@ -192,107 +206,62 @@ def main():
         bc_policy=model_path,
         use_oracle_reward=use_oracle_reward
     )
-    
-    
-    eval_env = wrap_env(eval_env)
-    if not args.debug:
-        eval_env = VecVideoRecorder(
-            eval_env,
-            f"videos/{run.id}",  
-            record_video_trigger=lambda x: x % (2 * ENVS_PER_GPU * EVAL_FREQ) == 0,  
-            # % (2*EVAL_FREQ) == 0,
-            video_length=123,
-        )
-    eval_env.reset()
+
+    eval_env = VecMonitor(eval_env,info_keywords=("is_success",))
+    traj_len = eval_env.envs[0].max_traj_len
      
-
-    vec_env = CustomSB3VectorEnvironment(
-        num_envs=ENVS_PER_GPU,
-        config=config,
-        rekep_program_dir=rekep_program_dir,
-        render_on_step=args.debug,
-        bc_policy=model_path,
-        use_oracle_reward=use_oracle_reward
+    eval_env = VecVideoRecorder(
+        eval_env,
+        f"videos/{run.id}",
+        record_video_trigger=lambda x: x % (2*EVAL_FREQ) == 0,
+        video_length=120,
     )
-    vec_env = wrap_env(vec_env)
-    vec_env.reset()
+    
 
-    if args.debug:  
-        breakpoint()
-
-
-
-
+     
     after_eval_callback = AfterEvalCallback(vec_env, eval_env)
     print(f'ENV made in {time.perf_counter()-t} s')
-
-    if args.algo == 'PPO':
-        checkpoint_callback = CheckpointCallback(save_freq=SAVE_FREQ, save_path=tensorboard_log_dir, name_prefix='')
-    else:
-        checkpoint_callback = SaveReplayBufferCallback(save_freq = SAVE_FREQ, save_path=tensorboard_log_dir, name_prefix='', save_replay_buffer=not args.debug)
+    checkpoint_callback = CheckpointCallback(save_freq=SAVE_FREQ, save_path=tensorboard_log_dir, name_prefix='')
 
     eval_callback = EvalCallback(eval_env,
                                 best_model_save_path=tensorboard_log_dir,
                                 eval_freq=EVAL_FREQ,   
-                                n_eval_episodes= EVAL_ENVS * 5,
+                                n_eval_episodes= EVAL_ENVS * 2,
                                 deterministic=True,
                                 render=False,
                                 callback_after_eval=after_eval_callback,
     )
+    
+    log_callback = RewardAndLossLogger()
 
 
+    
     wandb_callback = WandbCallback(
-        model_save_path=tensorboard_log_dir,
-        verbose=2,
+            model_save_path=tensorboard_log_dir,
+            verbose=2,
     )
 
-    callback = CallbackList([checkpoint_callback, eval_callback, wandb_callback])
 
-    train_freq=(256, "step")
-    gradient_steps=256
+    callback = CallbackList([checkpoint_callback, eval_callback, log_callback, wandb_callback])
+
+    train_freq=(1000, "step")
+    gradient_steps=1000
 
     wandb.alert(title="Run launched", text=f"Run ID: {wandb.run.id}", level=AlertLevel.INFO)
-
     if args.algo == 'SAC':
-        model = SAC("MlpPolicy", vec_env, learning_starts=200, train_freq = train_freq, gradient_steps=gradient_steps,  verbose=0,  tensorboard_log=tensorboard_log_dir)
-        if args.load_dir:
-            model = SAC.load(args.load_dir, vec_env)
-            model.load_replay_buffer(os.path.join(os.path.dirname(args.load_dir), 'replay_buffer.pkl'))
-
+        model = SAC("MlpPolicy", vec_env, learning_starts=600, train_freq = train_freq, gradient_steps=gradient_steps, learning_rate=3e-4, verbose=0,  tensorboard_log=tensorboard_log_dir)
     elif args.algo == 'PPO':
-        model = PPO("MlpPolicy", vec_env, verbose=0, gae_lambda=.85, tensorboard_log=tensorboard_log_dir)
-        if args.load_dir:
-            model = PPO.load(args.load_dir)
-            print(f'Model loaded from {args.load_dir}')
-         
-
+        #model = PPO.load('/nethome/atian31/flash8/repos/ReKep/log_dir/PPO/ORACLE/20250213-225233/_200000_steps.zip')
+        #model.set_env(vec_env)
+        model = PPO("MlpPolicy", vec_env, verbose=0, gae_lambda=.97, tensorboard_log=tensorboard_log_dir)
     elif args.algo == 'TQC':
-        model = TQC('MlpPolicy', vec_env, learning_starts=200, train_freq = train_freq, gradient_steps=gradient_steps,  verbose=0, tensorboard_log = tensorboard_log_dir)
-        if args.load_dir:
-            model = TQC.load(args.load_dir, vec_env)
-            model.load_replay_buffer(os.path.join(os.path.dirname(args.load_dir), 'replay_buffer.pkl'))
 
-
+        model = TQC('MlpPolicy', vec_env, learning_starts=600, train_freq = train_freq, gradient_steps=gradient_steps, learning_rate = 3e-4,  verbose=0, tensorboard_log = tensorboard_log_dir)
     print(f'Tensorboard log dir: {tensorboard_log_dir}')
-    if args.load_dir:
-       model.set_env(vec_env)
-     
     model.learn(total_timesteps=TOTAL_TIMESTEPS, progress_bar=args.debug,  callback=callback, tb_log_name="run",log_interval=4)
-
-    if args.algo =='SAC' or args.algo == 'TQC' and  not args.debug:
+    if args.algo =='SAC' or args.algo == 'TQC':
         model.save_replay_buffer(os.path.join(tensorboard_log_dir, "sac_replay_buffer"))
-
-    """
-    if args.debug:
-        images = vec_env.video_buffer
-        out_path = os.path.join(tensorboard_log_dir, 'training_video.mp4')
-        with imageio.get_writer(out_path, fps=20) as writer:
-            for image in images:
-                writer.append_data(image) 
-
-        print(f'Video written to {out_path}')
-    """
-
+   
     # Cleanup
  
     og.shutdown()

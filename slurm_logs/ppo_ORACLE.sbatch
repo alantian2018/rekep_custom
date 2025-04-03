@@ -14,7 +14,7 @@ source ~/.bashrc
 cd /nethome/atian31/flash8/repos/ReKep/
 source activate omnigibson
 
-python train_sb3.py --oracle --algo PPO
+python train_sb3.py --oracle --algo PPO 
 
 # export MASTER_PORT=12355
 # export WORLD_SIZE=1

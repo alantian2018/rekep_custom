@@ -57,7 +57,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
     def __init__(self, num_envs, config, rekep_program_dir, render_on_step, bc_policy=None, use_oracle_reward=False):
         self.num_envs = num_envs
         self.render_on_step = render_on_step
-
+      
         if og.sim is not None:
             og.sim.stop()
 
@@ -98,8 +98,6 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
             env.register_keypoints(program_info['init_keypoint_positions'])
             env.set_reward_function_for_stage(1)
 
-        
-
         # Play, and finish loading all the envs
         og.sim.play()
         for env in tmp_envs:
@@ -136,8 +134,9 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
 
             self.actions = actions
             
-            if self.actions.shape[-1] != 12:
+            if self.actions.shape[-1] == 7:
                 self.actions = np.pad(actions, ((0, 0), (4, 0)))
+         
             self.actions = np.concatenate([self.actions, self.actions[:, [-1]]], axis=1)
         
 
@@ -148,6 +147,7 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
         with og.sim.render_on_step(self.render_on_step):
             # Step the entire simulation
             og.sim.step()
+            
 
             for env_idx in range(self.num_envs):
                 obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[
@@ -179,11 +179,12 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
 
             for env_idx in range(self.num_envs):
                 maybe_options = {"options": self._options[env_idx]} if self._options[env_idx] else {}
-                self.envs[env_idx].reset( **maybe_options)
+                self.envs[env_idx].reset()
+                 
 
             # Settle the environments
             # TODO: fix this once we make the task classes etc. vectorized
-            for _ in range(13):
+            for _ in range(2):
                 og.sim.step()
 
             # Get the new obs
@@ -192,6 +193,6 @@ class CustomSB3VectorEnvironment(DummyVecEnv):
                 self._save_obs(env_idx, obs)
 
             # Seeds and options are only used once
-            self._reset_seeds()
-            self._reset_options()
+            #self._reset_seeds()
+            #self._reset_options()
             return self._obs_from_buf()

@@ -17,7 +17,7 @@ env:
   flatten_obs_space: True
   video_cache_size: 2000
   og_sim:
-    physics_frequency: 120
+    physics_frequency: 60
     rendering_frequency: 60
     action_frequency: 60
     
@@ -35,11 +35,11 @@ env:
     robot_config:
       name: Fetch
       type: Fetch
-      obs_modalities: [proprio]
+      obs_modalities: [proprio,rgb]
       action_modalities: continuous
       action_normalize: False
       position: [-0.8, 0.0, 0.]
-      grasping_mode: physical
+      grasping_mode: assisted
 
       controller_config:
         base:
@@ -63,6 +63,18 @@ env:
       position: [ 0.6137,  0.4764,  1.4565]
       orientation: [ 0.3212,  0.4682,  0.6788,  0.4656]
       resolution: 480
+    
+    #2:
+    #  name: cam_2
+    #  position: [16.9474 , 0.3977,  1.4567]
+    #  orientation: [ 0.3212,  0.4682,  0.6788,  0.4656]
+    #  resolution: 480
+
+    #3:
+    #  name: cam_3
+    #  position: [33.2579,  0.3419,  1.4472]
+    #  orientation: [ 0.3212,  0.4682,  0.6788,  0.4656]
+    #  resolution: 480
 
     # vlm camera
     0:

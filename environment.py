@@ -156,7 +156,7 @@ class CustomOGEnv(og.Environment):
                   'min_bounds':[-0.45, -0.35, 0.775],
                   'max_bounds':[0.05, 0.05, 0.781]},
              
-           #  'table_1' : { 'randomize' : False, 'obs':False}
+            # 'table_1' : { 'randomize' : False, 'obs':False}
              }
              )
         self.max_traj_len = 40
@@ -184,7 +184,7 @@ class CustomOGEnv(og.Environment):
         self.step_counter = 0        
         self.low_dim=low_dim
         self.config = config
-        self.action_dim= 7
+        self.action_dim= 12
         self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.action_dim,), dtype=np.float32)
         
         
@@ -252,12 +252,15 @@ class CustomOGEnv(og.Environment):
         if self.get_done():
             rew += 2.25
 
-        dist = calculate_bbox_to_point(self.get_aabb('pen_1'), self.get_ee_pos())
+        pen_pos = self.pen.get_position_orientation()[0]
+
+        dist = np.linalg.norm(pen_pos - self.get_ee_pos())
+        #calculate_bbox_to_point(self.get_aabb('pen_1'), self.get_ee_pos())
 
         reaching_reward = 1 - np.tanh(10.0* dist)
         reward =  rew + reaching_reward      
-      #  print(reward)
-        return reward
+      
+        return reward 
       
     
     def get_reward(self):
@@ -275,17 +278,32 @@ class CustomOGEnv(og.Environment):
         for fn in self.substage_constraints['subgoal']:
             reward -= 10*fn(ee_pos, keypoint_pos) 
         for fn in self.substage_constraints['path']:
-            reward -= 20*fn(ee_pos, keypoint_pos)  # - constraint violations
+            constraint_violation = 20*fn(ee_pos, keypoint_pos)  # - constraint violations
+            reward -= constraint_violation
 
+
+
+        # check doneness of task
         if self.grasp_point != -1 and self.is_grasping(
                                       self.get_object_by_keypoint(self.grasp_point)):
-            reward += 2
+            reward += 2.25
         
         if self.release_point != -1 and not self.is_grasping(
                                        self.get_object_by_keypoint(self.release_point)):
-            reward += 2
+            reward += 2.25
 
-        return reward
+
+        if  abs(reward) <= 2.25:
+            return reward  
+
+        else:
+            if reward < 0:
+                # otherwise clip in a leaky fashion
+                reward = -2.25 + (reward + 2.25) * .1
+
+            elif reward > 0:
+                reward = 2.25 + (reward - 2.25) * .1
+            return reward  
         
 
     def step(self, action):
@@ -304,8 +322,7 @@ class CustomOGEnv(og.Environment):
             next_o  = self.get_low_dim_obs()
         done = self.get_done()
         
-        if done:
-            print('DONE!')
+       
         self.step_counter +=1
 
         if (self.step_counter >= self.max_traj_len):
@@ -314,28 +331,36 @@ class CustomOGEnv(og.Environment):
         return next_o,reward,done,truncated, info
 
     def render(self):
+        og.sim.render()
         cam_obs = self.get_cam_obs()
         rgb = cam_obs[1]['rgb']
         return rgb
 
+    def render_training(self):
+        og.sim.render()
+        cam_obs = self.get_cam_obs()
+        two, three = cam_obs[2]['rgb'], cam_obs[3]['rgb']
+        return np.concatenate((two, three), axis=1)
+
     def reset(self, seed=None, objs=None):
-     
+        # print('reset')
         if seed is not None:
             torch.manual_seed(seed)
             np.random.seed(seed)
         
         super().reset(get_obs=False)
+        
         self.init_pos = dict()
         if self.randomize and objs is None:
 
-            # just for my pen task to work in a vec env.... yea this needs to be cleaned up and put in a new class.
+          
             table = self.scene.object_registry("name", 'table_1')
             
             table_pos, table_orn = table.get_position_orientation()
             pen_orn = self.pen.get_position_orientation()[1]
             
-            x = table_pos[0] + np.random.uniform(-0.5,-0.25)
-            y = table_pos[1] + np.random.uniform(-0.5, 0.25)
+            x = table_pos[0] + np.random.uniform(-0.4,-0.3)
+            y = table_pos[1] + np.random.uniform(-0.4, 0.2)
             z = 0.71
             pos = np.array([x,y,z])
 
@@ -344,7 +369,7 @@ class CustomOGEnv(og.Environment):
             self.init_pos['pen_1']=np.concatenate((pos, orn))
             self.pen.set_position_orientation(
                 position = pos,
-                orientation = orn
+                orientation = pen_orn
             ) 
 
         elif objs is not None:
@@ -355,15 +380,12 @@ class CustomOGEnv(og.Environment):
                         position = objs[obj][:3],
                         orientation = objs[obj][3:]
                     ) 
-        if not self.in_vec_env:
-            for i in range (10):
-                og.sim.step()
-
-        elif self.in_vec_env:   
-            og.sim.step()
-        
+         
         if self.robot is not None:
+           
             self.step_counter=0
+            self.robot.reset()
+         
             self.init_table_pos = self.table.get_position_orientation()[0]
             return self.get_low_dim_obs(), {}
 
@@ -496,28 +518,33 @@ class CustomOGEnv(og.Environment):
         if self.init_table_pos is None:
             self.init_table_pos = self.table.get_position_orientation()[0]
         
-        proprio = [] #[self.robot.get_eef_position() - self.init_table_pos,
-                     # self.robot.get_eef_orientation()]
+        proprio = [] 
         
-        
-        for robot in raw_obs:
-            d=robot['Fetch']['proprio']
-            if not isinstance(d, dict):
-                proprio.append(d)
+        #for robot in raw_obs:
+        #    d=robot['Fetch']['proprio']
+        #    if not isinstance(d, dict):
+        #        proprio.append(d)
 
-        proprio = torch.cat(proprio, dim=0)
+        robot_prim = self.robot.root_prim
+
+        ee_pos, ee_orn  = self.robot.get_eef_position(), self.robot.get_eef_orientation()
+        # ee_pos, ee_orn in global frame.
+        local_ee_pos, local_ee_orn = PoseAPI.convert_world_pose_to_local(robot_prim, ee_pos, ee_orn)
+        proprio = torch.cat([local_ee_pos, local_ee_orn], dim=0)
+        # ground robot prim to get pose of objects w.r.t. the local frame.
         
         for obj in self.objs:
             current_object = self.scene.object_registry("name", obj)
-            l, r = current_object.aabb
-            l -= self.init_table_pos
-            r -= self.init_table_pos
-
             pos, orn = current_object.get_position_orientation()
+            # pos, orn in global frame.
 
-            pos -= self.init_table_pos
-            proprio = torch.cat((proprio, pos, orn, l, r))
-      #  proprio = np.asarray(proprio)
+            object_local_pose = torch.cat(
+                PoseAPI.convert_world_pose_to_local(robot_prim, pos, orn)
+            )
+            # backend api func to get local pose.
+
+            proprio = torch.cat((proprio, object_local_pose))
+        proprio = np.asarray(proprio)
         return proprio
     
 
@@ -587,11 +614,10 @@ class CustomOGEnv(og.Environment):
         """Apply the post-sim-step part of an environment step, i.e. grab observations and return the step results."""
         # Grab observations
         
-        assert sum(action[:4])==0 and action.shape[0]==12
+        #assert sum(action[:4])==0 and action.shape[0]==12
 
         
         obs = self.get_low_dim_obs()
-
         # Step the scene graph builder if necessary
         if self._scene_graph_builder is not None:
             self._scene_graph_builder.step(self.scene)
@@ -602,15 +628,13 @@ class CustomOGEnv(og.Environment):
 
         self._populate_info(info)
         reward, done = self.get_reward(), self.get_done()
+    
         info["obs_info"] = 'low dim'
         info['reward'] = reward
         info['is_success'] = done
         info['done']['success']=done
        # breakpoint()
-        if done and self._automatic_reset:
-            # Add lost observation to our information dict, and reset
-            info["last_observation"] = obs
-            obs = self.reset()
+        
 
         # Hacky way to check for time limit info to split terminated and truncated
         terminated = False
@@ -618,6 +642,7 @@ class CustomOGEnv(og.Environment):
         
         if done:
             info['done']['termination_conditions']['sucess']='done'
+        info['is_success']=done
 
         if info['episode_length'] >= self.max_traj_len:
             info['done']['termination_conditions']['timeout']='done'
@@ -626,18 +651,26 @@ class CustomOGEnv(og.Environment):
             if tc_data=="done":
                 if tc == "timeout":
                     truncated = True
-                else:
-                    terminated = True
+               # else: # success
+               #     terminated = True
 
         done = terminated or truncated
         
         assert (terminated or truncated) == done, "Terminated and truncated must match done!"
-
+        #if done:
+         #   assert info['episode_length']==self.max_traj_len
         # Increment step
+
+        self._current_step += 1
+
         if done:
             info['done']['terminal_observation'] = obs
             info['terminal_observation'] = obs
-        self._current_step += 1
+
+        if done and self._automatic_reset:
+            # Add lost observation to our information dict, and reset
+            info["last_observation"] = obs
+            obs = self.reset()        
         
         return obs, reward, terminated, truncated, info
 

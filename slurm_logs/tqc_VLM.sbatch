@@ -3,7 +3,7 @@
 #SBATCH --partition=overcap
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=17
-#SBATCH --gres=gpu:rtx_6000:1
+#SBATCH --gres=gpu:a40:1
 #SBATCH --qos=long
 #SBATCH --output=/nethome/atian31/flash8/repos/ReKep/slurm_logs/TQC/%j.out
 
@@ -13,7 +13,7 @@ source ~/.bashrc
 cd /nethome/atian31/flash8/repos/ReKep/
 source activate omnigibson
 
-python train_sb3.py --algo TQC
+python train_sb3.py --algo TQC 
 
 # export MASTER_PORT=12355
 # export WORLD_SIZE=1
